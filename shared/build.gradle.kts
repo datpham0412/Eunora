@@ -62,6 +62,9 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.stdlib)
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+                implementation("io.ktor:ktor-client-core:2.3.5")
+                implementation("io.ktor:ktor-client-content-negotiation:2.3.5")
+                implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.5")
                 // Add KMP dependencies here
             }
         }
@@ -77,6 +80,7 @@ kotlin {
                 // Add Android-specific dependencies here. Note that this source set depends on
                 // commonMain by default and will correctly pull the Android artifacts of any KMP
                 // dependencies declared in commonMain.
+                implementation("io.ktor:ktor-client-okhttp:2.3.5")
             }
         }
 
@@ -95,6 +99,7 @@ kotlin {
                 // part of KMP’s default source set hierarchy. Note that this source set depends
                 // on common by default and will correctly pull the iOS artifacts of any
                 // KMP dependencies declared in commonMain.
+                implementation("io.ktor:ktor-client-darwin:2.3.5")
             }
         }
     }
