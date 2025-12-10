@@ -1,5 +1,7 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
+
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -53,7 +55,14 @@ android {
     buildFeatures {
         buildConfig = true
     }
-    val geminiKey: String = project.findProperty("GEMINI_API_KEY") as? String ?: ""
+    val envFile = rootProject.file("composeApp/.env")
+    val envProps = Properties()
+
+    if (envFile.exists()) {
+        envProps.load(envFile.inputStream())
+    }
+
+    val geminiKey = envProps.getProperty("GEMINI_API_KEY") ?: ""
     defaultConfig {
         applicationId = "org.example.project"
         minSdk = libs.versions.android.minSdk.get().toInt()
