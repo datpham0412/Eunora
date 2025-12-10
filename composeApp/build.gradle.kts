@@ -47,14 +47,13 @@ kotlin {
     }
 }
 
-val GEMINI_API_KEY: String by project
-
 android {
     namespace = "org.example.project"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     buildFeatures {
         buildConfig = true
     }
+    val geminiKey: String = project.findProperty("GEMINI_API_KEY") as? String ?: ""
     defaultConfig {
         applicationId = "org.example.project"
         minSdk = libs.versions.android.minSdk.get().toInt()
@@ -64,7 +63,7 @@ android {
         buildConfigField(
             "String",
             "GEMINI_API_KEY",
-            "\"${project.properties["GEMINI_API_KEY"] ?: ""}\""
+            "\"$geminiKey\""
         )
     }
     packaging {
