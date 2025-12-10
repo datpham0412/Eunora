@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -8,22 +9,31 @@ plugins {
     alias(libs.plugins.composeCompiler)
 }
 
+
+val envFile = rootProject.file(".env")
+val envProps = Properties().apply {
+    if (envFile.exists()) {
+        load(envFile.inputStream())
+        println("Loaded .env from ${envFile.absolutePath}")
+    } else {
+        println("WARNING: .env not found at project root")
+    }
+}
+
+val geminiKey: String = envProps.getProperty("GEMINI_API_KEY") ?: ""
+println("GEMINI_API_KEY = $geminiKey")
+
 kotlin {
 
+    // Android target
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
 
-    //
-    // ---- DECLARE XCFRAMEWORK BUILDER ----
-    //
     val xcf = XCFramework()
 
-    //
-    // ---- iOS TARGETS ----
-    //
     val iosTargets = listOf(
         iosX64(),
         iosArm64(),
@@ -34,15 +44,11 @@ kotlin {
         target.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
-            xcf.add(this)      // <-- REQUIRED to include this framework in XCFramework
+            xcf.add(this)
         }
     }
 
-    //
-    // ---- SOURCE SETS ----
-    //
     sourceSets {
-
         val commonMain by getting {
             dependencies {
                 implementation(compose.runtime)
@@ -50,7 +56,6 @@ kotlin {
                 implementation(compose.material3)
                 implementation(compose.ui)
                 implementation(compose.components.resources)
-
                 implementation(libs.androidx.lifecycle.viewmodelCompose)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
 
@@ -65,9 +70,6 @@ kotlin {
             }
         }
 
-        //
-        // Shared iOS code
-        //
         val iosMain by creating {
             dependsOn(commonMain)
         }
@@ -78,13 +80,13 @@ kotlin {
         }
     }
 }
-
-//
-// ---- ANDROID CONFIG ----
-//
 android {
     namespace = "org.example.project"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
+
+    buildFeatures {
+        buildConfig = true
+    }
 
     defaultConfig {
         applicationId = "org.example.project"
@@ -92,6 +94,12 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+
+        buildConfigField(
+            "String",
+            "GEMINI_API_KEY",
+            "\"$geminiKey\""
+        )
     }
 
     packaging {
@@ -109,4 +117,3 @@ android {
 dependencies {
     debugImplementation(compose.uiTooling)
 }
-

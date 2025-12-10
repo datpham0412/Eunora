@@ -19,3 +19,4 @@ captures
 node_modules/
 *.env
 
+iosApp/iosApp.xcodeproj/project.pbxproj
