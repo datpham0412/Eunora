@@ -11,7 +11,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-
+        TestRunner().run(BuildConfig.GEMINI_API_KEY)
         setContent {
             App()
         }

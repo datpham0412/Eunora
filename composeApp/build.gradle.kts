@@ -35,6 +35,7 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.ui)
+            implementation(project(":shared"))
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
@@ -46,16 +47,25 @@ kotlin {
     }
 }
 
+val GEMINI_API_KEY: String by project
+
 android {
     namespace = "org.example.project"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
-
+    buildFeatures {
+        buildConfig = true
+    }
     defaultConfig {
         applicationId = "org.example.project"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+        buildConfigField(
+            "String",
+            "GEMINI_API_KEY",
+            "\"${project.properties["GEMINI_API_KEY"] ?: ""}\""
+        )
     }
     packaging {
         resources {
