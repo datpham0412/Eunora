@@ -13,6 +13,13 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == "com.codingfeline.buildkonfig") {
+                useModule("com.codingfeline.buildkonfig:buildkonfig-gradle-plugin:0.13.3")
+            }
+        }
+    }
 }
 
 dependencyResolutionManagement {
