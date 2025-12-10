@@ -6,8 +6,28 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		66EC9A382EE9456B00FF00E9 /* composeApp.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EC9A372EE9456B00FF00E9 /* composeApp.xcframework */; };
+		66EC9A392EE9456B00FF00E9 /* composeApp.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 66EC9A372EE9456B00FF00E9 /* composeApp.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		66EC9A3A2EE9456B00FF00E9 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				66EC9A392EE9456B00FF00E9 /* composeApp.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		1CE82AAD87C66BDA68452943 /* ai-mood-journal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ai-mood-journal.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		66EC9A372EE9456B00FF00E9 /* composeApp.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = composeApp.xcframework; path = ../composeApp/build/XCFrameworks/release/composeApp.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -41,6 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				66EC9A382EE9456B00FF00E9 /* composeApp.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -55,11 +76,20 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		66EC9A362EE9456B00FF00E9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				66EC9A372EE9456B00FF00E9 /* composeApp.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		B697300D510D678A76723433 = {
 			isa = PBXGroup;
 			children = (
 				4A1424A4361AC6AA343F5CBA /* Configuration */,
 				BF8956D7748083123B69606F /* iosApp */,
+				66EC9A362EE9456B00FF00E9 /* Frameworks */,
 				461594A94922BF64102A5B4B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -75,6 +105,7 @@
 				E065EA9520EA1CAA90E5BFAA /* Sources */,
 				4A413EFB566D24C6B18AC042 /* Frameworks */,
 				F20655DCD4BBC1A1B79011FD /* Resources */,
+				66EC9A3A2EE9456B00FF00E9 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
