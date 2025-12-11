@@ -20,7 +20,19 @@ class AIService(private val apiKey: String) {
             ?.jsonObject?.get("text")
             ?.jsonPrimitive?.content ?: ""
 
-        val parsed = Json.parseToJsonElement(textResponse).jsonObject
+        println("📄 Raw text response: ${textResponse.take(200)}...")
+
+        // Strip markdown code fences if present
+        val cleanedJson = textResponse
+            .trim()
+            .removePrefix("```json")
+            .removePrefix("```")
+            .removeSuffix("```")
+            .trim()
+
+        println("🧹 Cleaned JSON: ${cleanedJson.take(200)}...")
+
+        val parsed = Json.parseToJsonElement(cleanedJson).jsonObject
 
         val journal = parsed["journal"]!!.jsonPrimitive.content
         val advice = parsed["advice"]!!.jsonPrimitive.content

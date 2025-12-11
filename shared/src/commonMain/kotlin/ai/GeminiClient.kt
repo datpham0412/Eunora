@@ -5,6 +5,7 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.*
@@ -13,33 +14,58 @@ class GeminiClient(private val apiKey: String) {
 
     private val client = HttpClient {
         install(ContentNegotiation) {
-            json()
+            json(Json {
+                ignoreUnknownKeys = true
+                isLenient = true
+            })
         }
     }
 
+    private val model = "models/gemini-2.5-flash"
+    private val endpoint = "https://generativelanguage.googleapis.com/v1beta/$model:generateContent"
+
     suspend fun generateJsonResponse(prompt: String): JsonObject {
 
-        val response: HttpResponse = client.post(
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$apiKey"
-        ) {
-            contentType(io.ktor.http.ContentType.Application.Json)
-            setBody(
-                JsonObject(
-                    mapOf("contents" to JsonArray(
-                        listOf(
-                            JsonObject(
-                                mapOf("parts" to JsonArray(
-                                    listOf(JsonObject(mapOf("text" to JsonPrimitive(prompt))))
-                                ))
+        println("🌐 Sending request → Gemini 2.5 Flash")
+        println("URL: $endpoint")
+
+        val requestBody = buildJsonObject {
+            put(
+                "contents",
+                JsonArray(
+                    listOf(
+                        buildJsonObject {
+                            put(
+                                "parts",
+                                JsonArray(
+                                    listOf(
+                                        buildJsonObject {
+                                            put("text", JsonPrimitive(prompt))
+                                        }
+                                    )
+                                )
                             )
-                        )
-                    ))
+                        }
+                    )
                 )
             )
         }
 
-        val json = response.body<JsonObject>()
-        return json
+        println("📤 Request body = ${requestBody.toString().take(200)}...")
+
+        val response: HttpResponse = client.post("$endpoint?key=$apiKey") {
+            contentType(ContentType.Application.Json)
+            setBody(requestBody)
+        }
+
+        val responseBody = response.bodyAsText()
+        println("📥 Status: ${response.status}")
+        println("📥 Body: ${responseBody.take(500)}...")
+
+        if (responseBody.isEmpty()) {
+            throw IllegalStateException("❌ Empty response from Gemini API")
+        }
+
+        return Json.parseToJsonElement(responseBody).jsonObject
     }
 }
-
