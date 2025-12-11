@@ -8,22 +8,20 @@ import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.shared.ApiConfig
-import ai.TestAI
+import viewmodel.TestViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        // Log API key to verify it's loaded correctly
         Log.d("MainActivity", "=================================")
         Log.d("MainActivity", "GEMINI API KEY: ${ApiConfig.GEMINI_API_KEY}")
         Log.d("MainActivity", "API KEY LENGTH: ${ApiConfig.GEMINI_API_KEY.length}")
         Log.d("MainActivity", "=================================")
 
-        // Test AI Service
-        Log.d("MainActivity", "🧪 Starting AI Service Test...")
-        TestAI.run()
+        Log.d("MainActivity", "🧪 Starting ViewModel Test...")
+        TestViewModel.run()
 
         setContent {
             App()
