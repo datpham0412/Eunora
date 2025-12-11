@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
+import java.util.Properties
 
 plugins {
     kotlin("multiplatform")
@@ -48,10 +49,45 @@ kotlin {
             }
         }
 
-        iosX64Main.get().dependsOn(iosMain)
-        iosArm64Main.get().dependsOn(iosMain)
-        iosSimulatorArm64Main.get().dependsOn(iosMain)
+        val iosX64Main by getting { dependsOn(iosMain) }
+        val iosArm64Main by getting { dependsOn(iosMain) }
+        val iosSimulatorArm64Main by getting { dependsOn(iosMain) }
     }
+}
+// Generate API key config
+val generateApiKeyConfig by tasks.registering {
+    val envFile = rootProject.file(".env")
+    val envProps = Properties()
+    if(envFile.exists()){
+        envProps.load(envFile.inputStream())
+    }
+
+    val apiKey = System.getenv("GEMINI_API_KEY") ?: envProps.getProperty("GEMINI_API_KEY") ?: ""
+    val outputDir = layout.buildDirectory.dir("generated/kotlin").get().asFile
+    val outputFile = File(outputDir, "com/example/shared/ApiConfig.kt")
+
+    outputs.file(outputFile)
+
+    doLast {
+        outputFile.parentFile.mkdirs()
+        outputFile.writeText("""
+package com.example.shared
+
+object ApiConfig {
+    const val GEMINI_API_KEY: String = "$apiKey"
+}
+        """.trimIndent())
+    }
+}
+
+kotlin {
+    sourceSets.commonMain {
+        kotlin.srcDir(generateApiKeyConfig.map { it.outputs.files.singleFile.parentFile.parentFile })
+    }
+}
+
+tasks.matching { it.name.contains("compile", ignoreCase = true) && it.name.contains("Kotlin", ignoreCase = true) }.configureEach {
+    dependsOn(generateApiKeyConfig)
 }
 
 android {

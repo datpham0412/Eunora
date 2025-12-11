@@ -7,15 +7,18 @@ import androidx.activity.enableEdgeToEdge
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.shared.TestRunner
+import com.example.shared.ApiConfig
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        val provider = AndroidApiKeyProvider()
-        Log.d("KEY_TEST_ANDROID", "Key = '${provider.geminiKey}'")
-        TestRunner(provider).run()
+
+        // Log API key to verify it's loaded correctly
+        Log.d("MainActivity", "=================================")
+        Log.d("MainActivity", "GEMINI API KEY: ${ApiConfig.GEMINI_API_KEY}")
+        Log.d("MainActivity", "API KEY LENGTH: ${ApiConfig.GEMINI_API_KEY.length}")
+        Log.d("MainActivity", "=================================")
 
         setContent {
             App()
