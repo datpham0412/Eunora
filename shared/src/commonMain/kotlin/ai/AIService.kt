@@ -12,15 +12,23 @@ class AIService(private val apiKey: String) {
         val prompt = PromptBuilder.buildInterpretationPrompt(rawText)
         val json = client.generateJsonResponse(prompt)
 
+        println("🔍 Full API Response: ${json.toString()}")
+
         val textResponse = json["candidates"]
-            ?.jsonArray?.first()
+            ?.jsonArray?.firstOrNull()
             ?.jsonObject?.get("content")
             ?.jsonObject?.get("parts")
-            ?.jsonArray?.first()
+            ?.jsonArray?.firstOrNull()
             ?.jsonObject?.get("text")
-            ?.jsonPrimitive?.content ?: ""
+            ?.jsonPrimitive?.content
 
-        println("📄 Raw text response: ${textResponse.take(200)}...")
+        if (textResponse == null || textResponse.isEmpty()) {
+            println("❌ Empty or null response from API")
+            println("❌ Full JSON: ${json.toString()}")
+            throw IllegalStateException("Empty response from Gemini API. Check your API key and quota.")
+        }
+
+        println("📄 Raw text response: $textResponse")
 
         // Strip markdown code fences if present
         val cleanedJson = textResponse
@@ -30,7 +38,11 @@ class AIService(private val apiKey: String) {
             .removeSuffix("```")
             .trim()
 
-        println("🧹 Cleaned JSON: ${cleanedJson.take(200)}...")
+        println("🧹 Cleaned JSON: $cleanedJson")
+
+        if (cleanedJson.isEmpty()) {
+            throw IllegalStateException("Empty JSON after cleaning")
+        }
 
         val parsed = Json.parseToJsonElement(cleanedJson).jsonObject
 
