@@ -21,7 +21,7 @@ class GeminiClient(private val apiKey: String) {
         }
     }
 
-    private val model = "models/gemini-2.5-flash"
+    private val model = "models/gemini-2.5-flash-lite"
     private val endpoint = "https://generativelanguage.googleapis.com/v1beta/$model:generateContent"
 
     suspend fun generateJsonResponse(prompt: String): JsonObject {
