@@ -87,14 +87,12 @@ fun MoodInputScreen(
 
             Spacer(modifier = Modifier.height(56.dp))
 
-            Surface(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(min = 240.dp),
-                shape = RoundedCornerShape(32.dp),
-                color = Color.White.copy(alpha = 0.75f),
-                tonalElevation = 0.dp,
-                shadowElevation = 8.dp
+                    .heightIn(min = 240.dp)
+                    .clip(RoundedCornerShape(32.dp))
+                    .background(Color.White.copy(alpha = 0.95f))
             ) {
                 Box(
                     modifier = Modifier.padding(28.dp)
