@@ -66,25 +66,25 @@ fun MoodInputScreen(
             Text(
                 text = "How are you feeling?",
                 style = MaterialTheme.typography.headlineMedium.copy(
-                    fontSize = 28.sp,
-                    lineHeight = 36.sp
+                    fontSize = 34.sp,
+                    lineHeight = 42.sp
                 ),
-                fontWeight = FontWeight.Light,
+                fontWeight = FontWeight.Medium,
                 color = Color(0xFF1F2937),
                 letterSpacing = 0.2.sp,
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Text(
                 text = "Let your thoughts flow freely",
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    fontSize = 15.sp,
-                    lineHeight = 22.sp
+                    fontSize = 17.sp,
+                    lineHeight = 24.sp
                 ),
-                fontWeight = FontWeight.Light,
-                color = Color(0xFF4A5568).copy(alpha = 0.75f),
+                fontWeight = FontWeight.Normal,
+                color = Color(0xFF4A5568).copy(alpha = 0.85f),
                 textAlign = TextAlign.Center
             )
 
