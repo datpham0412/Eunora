@@ -31,18 +31,18 @@ fun MoodInputScreen(
 ) {
     val backgroundGradient = Brush.verticalGradient(
         colors = listOf(
-            Color(0xFFE8D5F2),
-            Color(0xFFD4E4F7),
-            Color(0xFFF5E1E8),
-            Color(0xFFE3E8F5)
+            Color(0xFFD8C5F2),
+            Color(0xFFC4D4F7),
+            Color(0xFFF0D1E8),
+            Color(0xFFD3D8F5)
         )
     )
 
     val buttonGradient = Brush.horizontalGradient(
         colors = listOf(
-            Color(0xFFB794F6),
-            Color(0xFF7C9FF5),
-            Color(0xFFE89AC7)
+            Color(0xFFA080F6),
+            Color(0xFF6B8FF5),
+            Color(0xFFE080C7)
         )
     )
 
@@ -67,7 +67,7 @@ fun MoodInputScreen(
                     lineHeight = 36.sp
                 ),
                 fontWeight = FontWeight.Light,
-                color = Color(0xFF2D3748).copy(alpha = 0.85f),
+                color = Color(0xFF2D3748),
                 letterSpacing = 0.2.sp,
                 textAlign = TextAlign.Center
             )
@@ -81,7 +81,7 @@ fun MoodInputScreen(
                     lineHeight = 22.sp
                 ),
                 fontWeight = FontWeight.Light,
-                color = Color(0xFF4A5568).copy(alpha = 0.5f),
+                color = Color(0xFF4A5568).copy(alpha = 0.65f),
                 textAlign = TextAlign.Center
             )
 
@@ -92,7 +92,14 @@ fun MoodInputScreen(
                     .fillMaxWidth()
                     .heightIn(min = 240.dp)
                     .clip(RoundedCornerShape(32.dp))
-                    .background(Color.White.copy(alpha = 0.95f))
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(
+                                Color.White.copy(alpha = 0.98f),
+                                Color(0xFFFAF5FF).copy(alpha = 0.95f)
+                            )
+                        )
+                    )
             ) {
                 Box(
                     modifier = Modifier.padding(28.dp)
@@ -177,8 +184,8 @@ fun MoodInputScreen(
                         } else {
                             Brush.horizontalGradient(
                                 listOf(
-                                    Color(0xFFE2E8F0),
-                                    Color(0xFFEDF2F7)
+                                    Color(0xFFD8D5F2).copy(alpha = 0.6f),
+                                    Color(0xFFD4DBF7).copy(alpha = 0.6f)
                                 )
                             )
                         }
@@ -238,7 +245,7 @@ fun MoodInputScreen(
                     letterSpacing = 1.2.sp
                 ),
                 fontWeight = FontWeight.Light,
-                color = Color(0xFF4A5568).copy(alpha = 0.45f),
+                color = Color(0xFF4A5568).copy(alpha = 0.6f),
                 textAlign = TextAlign.Center
             )
 
@@ -262,8 +269,8 @@ fun MoodInputScreen(
                     border = null,
                     shape = RoundedCornerShape(20.dp),
                     colors = SuggestionChipDefaults.suggestionChipColors(
-                        containerColor = Color.White.copy(alpha = 0.5f),
-                        labelColor = Color(0xFF4A5568).copy(alpha = 0.7f)
+                        containerColor = Color.White.copy(alpha = 0.7f),
+                        labelColor = Color(0xFF4A5568).copy(alpha = 0.85f)
                     )
                 )
                 SuggestionChip(
@@ -280,8 +287,8 @@ fun MoodInputScreen(
                     border = null,
                     shape = RoundedCornerShape(20.dp),
                     colors = SuggestionChipDefaults.suggestionChipColors(
-                        containerColor = Color.White.copy(alpha = 0.5f),
-                        labelColor = Color(0xFF4A5568).copy(alpha = 0.7f)
+                        containerColor = Color.White.copy(alpha = 0.7f),
+                        labelColor = Color(0xFF4A5568).copy(alpha = 0.85f)
                     )
                 )
             }
@@ -306,8 +313,8 @@ fun MoodInputScreen(
                     border = null,
                     shape = RoundedCornerShape(20.dp),
                     colors = SuggestionChipDefaults.suggestionChipColors(
-                        containerColor = Color.White.copy(alpha = 0.5f),
-                        labelColor = Color(0xFF4A5568).copy(alpha = 0.7f)
+                        containerColor = Color.White.copy(alpha = 0.7f),
+                        labelColor = Color(0xFF4A5568).copy(alpha = 0.85f)
                     )
                 )
                 SuggestionChip(
@@ -324,8 +331,8 @@ fun MoodInputScreen(
                     border = null,
                     shape = RoundedCornerShape(20.dp),
                     colors = SuggestionChipDefaults.suggestionChipColors(
-                        containerColor = Color.White.copy(alpha = 0.5f),
-                        labelColor = Color(0xFF4A5568).copy(alpha = 0.7f)
+                        containerColor = Color.White.copy(alpha = 0.7f),
+                        labelColor = Color(0xFF4A5568).copy(alpha = 0.85f)
                     )
                 )
             }
