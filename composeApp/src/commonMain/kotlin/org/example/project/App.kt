@@ -11,7 +11,6 @@ import org.example.project.ui.MoodResultScreen
 import repository.MoodRepository
 import viewmodel.MoodViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun App() {
     // Initialize ViewModel
@@ -30,47 +29,28 @@ fun App() {
             tertiary = androidx.compose.ui.graphics.Color(0xFFFF6F00)
         )
     ) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = "Eunora",
-                            style = MaterialTheme.typography.titleLarge
-                        )
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            when {
+                uiState.currentMoodEntry != null -> {
+                    // Show results
+                    MoodResultScreen(
+                        moodEntry = uiState.currentMoodEntry!!,
+                        onNewMood = { viewModel.clearMood() }
                     )
-                )
-            }
-        ) { paddingValues ->
-            Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
-                color = MaterialTheme.colorScheme.background
-            ) {
-                when {
-                    uiState.currentMoodEntry != null -> {
-                        // Show results
-                        MoodResultScreen(
-                            moodEntry = uiState.currentMoodEntry!!,
-                            onNewMood = { viewModel.clearMood() }
-                        )
-                    }
-                    else -> {
-                        // Show input screen
-                        MoodInputScreen(
-                            userInput = uiState.userInput,
-                            isLoading = uiState.isLoading,
-                            error = uiState.error,
-                            onInputChange = { viewModel.onInputChange(it) },
-                            onAnalyze = { viewModel.analyzeMood() },
-                            onClearError = { viewModel.clearError() }
-                        )
-                    }
+                }
+                else -> {
+                    // Show input screen
+                    MoodInputScreen(
+                        userInput = uiState.userInput,
+                        isLoading = uiState.isLoading,
+                        error = uiState.error,
+                        onInputChange = { viewModel.onInputChange(it) },
+                        onAnalyze = { viewModel.analyzeMood() },
+                        onClearError = { viewModel.clearError() }
+                    )
                 }
             }
         }

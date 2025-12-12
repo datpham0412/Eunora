@@ -59,9 +59,9 @@ fun MoodInputScreen(
                 .fillMaxSize()
                 .padding(horizontal = 28.dp)
                 .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Spacer(modifier = Modifier.height(80.dp))
 
             Text(
                 text = "How are you feeling?",
@@ -294,8 +294,6 @@ fun MoodInputScreen(
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.height(80.dp))
         }
     }
 }
