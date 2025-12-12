@@ -1,8 +1,11 @@
 package org.example.project.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
@@ -240,105 +243,56 @@ fun MoodInputScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(56.dp))
+            Spacer(modifier = Modifier.height(48.dp))
 
-            Text(
-                text = "Need inspiration?",
-                style = MaterialTheme.typography.labelSmall.copy(
-                    fontSize = 12.sp,
-                    letterSpacing = 1.2.sp
-                ),
-                fontWeight = FontWeight.Light,
-                color = Color(0xFF4A5568).copy(alpha = 0.7f),
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally)
-            ) {
-                SuggestionChip(
-                    onClick = { onInputChange("I feel stressed but hopeful today") },
-                    label = {
-                        Text(
-                            "Stressed",
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Light,
-                            letterSpacing = 0.3.sp
-                        )
-                    },
-                    enabled = !isLoading,
-                    border = null,
-                    shape = RoundedCornerShape(20.dp),
-                    colors = SuggestionChipDefaults.suggestionChipColors(
-                        containerColor = Color.White.copy(alpha = 0.8f),
-                        labelColor = Color(0xFF4A5568).copy(alpha = 0.9f)
-                    )
-                )
-                SuggestionChip(
-                    onClick = { onInputChange("I'm feeling happy and energetic!") },
-                    label = {
-                        Text(
-                            "Happy",
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Light,
-                            letterSpacing = 0.3.sp
-                        )
-                    },
-                    enabled = !isLoading,
-                    border = null,
-                    shape = RoundedCornerShape(20.dp),
-                    colors = SuggestionChipDefaults.suggestionChipColors(
-                        containerColor = Color.White.copy(alpha = 0.8f),
-                        labelColor = Color(0xFF4A5568).copy(alpha = 0.9f)
-                    )
+            // Emoji mood selector
+            val moods = remember {
+                listOf(
+                    "😊" to "I'm feeling happy and energetic today!",
+                    "😌" to "I feel calm and at peace right now",
+                    "😐" to "I feel okay, just neutral about everything",
+                    "😔" to "I feel sad and a bit down",
+                    "😠" to "I feel frustrated and irritated"
                 )
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
-
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                SuggestionChip(
-                    onClick = { onInputChange("I feel sad and lonely") },
-                    label = {
+                moods.forEach { (emoji, text) ->
+                    val isSelected = userInput == text
+
+                    Box(
+                        modifier = Modifier
+                            .size(64.dp)
+                            .clip(CircleShape)
+                            .background(
+                                if (isSelected) {
+                                    Color.White.copy(alpha = 0.4f)
+                                } else {
+                                    Color.Transparent
+                                }
+                            )
+                            .clickable(
+                                enabled = !isLoading,
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) {
+                                onInputChange(text)
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
                         Text(
-                            "Sad",
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Light,
-                            letterSpacing = 0.3.sp
+                            text = emoji,
+                            fontSize = if (isSelected) 36.sp else 32.sp,
+                            modifier = Modifier.offset(y = if (isSelected) (-2).dp else 0.dp)
                         )
-                    },
-                    enabled = !isLoading,
-                    border = null,
-                    shape = RoundedCornerShape(20.dp),
-                    colors = SuggestionChipDefaults.suggestionChipColors(
-                        containerColor = Color.White.copy(alpha = 0.8f),
-                        labelColor = Color(0xFF4A5568).copy(alpha = 0.9f)
-                    )
-                )
-                SuggestionChip(
-                    onClick = { onInputChange("Feeling overwhelmed and tired") },
-                    label = {
-                        Text(
-                            "Overwhelmed",
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Light,
-                            letterSpacing = 0.3.sp
-                        )
-                    },
-                    enabled = !isLoading,
-                    border = null,
-                    shape = RoundedCornerShape(20.dp),
-                    colors = SuggestionChipDefaults.suggestionChipColors(
-                        containerColor = Color.White.copy(alpha = 0.8f),
-                        labelColor = Color(0xFF4A5568).copy(alpha = 0.9f)
-                    )
-                )
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(80.dp))
