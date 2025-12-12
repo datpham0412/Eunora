@@ -4,7 +4,7 @@ import ai.AIService
 import model.MoodEntry
 import model.MoodArtMetadata
 import kotlin.random.Random
-import kotlinx.datetime.Clock
+import util.currentTimeMillis
 
 class MoodRepository(private val aiService: AIService) {
     suspend fun analyzeMood(rawMoodText: String): MoodEntry {
@@ -18,7 +18,7 @@ class MoodRepository(private val aiService: AIService) {
             normalizedMood = normalizedMood,
             ai = aiResult,
             art = MoodArtMetadata(),
-            timestamp = Clock.System.now().toEpochMilliseconds()
+            timestamp = currentTimeMillis()
         )
     }
     private fun extractNormalizedMood(text: String): String {
@@ -35,7 +35,7 @@ class MoodRepository(private val aiService: AIService) {
         }
     }
     private fun generateId(): String {
-        val timestamp = Clock.System.now().toEpochMilliseconds()
+        val timestamp = currentTimeMillis()
         val random = Random.nextInt(10000)
         return "mood_${timestamp}_${random}"
     }
