@@ -1,47 +1,85 @@
 package org.example.project
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import org.jetbrains.compose.resources.painterResource
+import ai.AIService
+import com.example.shared.ApiConfig
+import org.example.project.ui.MoodInputScreen
+import org.example.project.ui.MoodResultScreen
+import repository.MoodRepository
+import viewmodel.MoodViewModel
 
-import ai_mood_journal.composeapp.generated.resources.Res
-import ai_mood_journal.composeapp.generated.resources.compose_multiplatform
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun App() {
-    MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
+    // Initialize ViewModel
+    val viewModel = remember {
+        val aiService = AIService(ApiConfig.GEMINI_API_KEY)
+        val repository = MoodRepository(aiService)
+        MoodViewModel(repository)
+    }
+
+    val uiState by viewModel.state.collectAsState()
+
+    MaterialTheme(
+        colorScheme = lightColorScheme(
+            primary = androidx.compose.ui.graphics.Color(0xFF6200EE),
+            secondary = androidx.compose.ui.graphics.Color(0xFF03DAC5),
+            tertiary = androidx.compose.ui.graphics.Color(0xFFFF6F00)
+        )
+    ) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = "AI Mood Journal",
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                )
             }
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
+        ) { paddingValues ->
+            Surface(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                color = MaterialTheme.colorScheme.background
+            ) {
+                when {
+                    uiState.currentMoodEntry != null -> {
+                        // Show results
+                        MoodResultScreen(
+                            moodEntry = uiState.currentMoodEntry!!,
+                            onNewMood = { viewModel.clearMood() }
+                        )
+                    }
+                    else -> {
+                        // Show input screen
+                        MoodInputScreen(
+                            userInput = uiState.userInput,
+                            isLoading = uiState.isLoading,
+                            error = uiState.error,
+                            onInputChange = { viewModel.onInputChange(it) },
+                            onAnalyze = { viewModel.analyzeMood() },
+                            onClearError = { viewModel.clearError() }
+                        )
+                    }
                 }
             }
+        }
+    }
+
+    // Cleanup when composable leaves composition
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.onCleared()
         }
     }
 }
