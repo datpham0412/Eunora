@@ -35,7 +35,7 @@ fun App() {
                 TopAppBar(
                     title = {
                         Text(
-                            text = "AI Mood Journal",
+                            text = "Eunora",
                             style = MaterialTheme.typography.titleLarge
                         )
                     },

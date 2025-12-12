@@ -7,18 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		66EC9A5D2EEA469D00FF00E9 /* composeApp.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EC9A372EE9456B00FF00E9 /* composeApp.xcframework */; };
-		66EC9A5E2EEA469D00FF00E9 /* composeApp.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 66EC9A372EE9456B00FF00E9 /* composeApp.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		66EC9A842EEC529D00FF00E9 /* composeApp.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EC9A812EEC528F00FF00E9 /* composeApp.xcframework */; };
+		66EC9A852EEC529D00FF00E9 /* composeApp.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 66EC9A812EEC528F00FF00E9 /* composeApp.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		66EC9A5F2EEA469D00FF00E9 /* Embed Frameworks */ = {
+		66EC9A862EEC529E00FF00E9 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				66EC9A5E2EEA469D00FF00E9 /* composeApp.xcframework in Embed Frameworks */,
+				66EC9A852EEC529D00FF00E9 /* composeApp.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -28,6 +28,7 @@
 /* Begin PBXFileReference section */
 		1CE82AAD87C66BDA68452943 /* ai-mood-journal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ai-mood-journal.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		66EC9A372EE9456B00FF00E9 /* composeApp.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = composeApp.xcframework; path = ../composeApp/build/XCFrameworks/release/composeApp.xcframework; sourceTree = "<group>"; };
+		66EC9A812EEC528F00FF00E9 /* composeApp.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = composeApp.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -61,7 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				66EC9A5D2EEA469D00FF00E9 /* composeApp.xcframework in Frameworks */,
+				66EC9A842EEC529D00FF00E9 /* composeApp.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,9 +80,27 @@
 		66EC9A362EE9456B00FF00E9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				66EC9A832EEC528F00FF00E9 /* XCFrameworks */,
 				66EC9A372EE9456B00FF00E9 /* composeApp.xcframework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		66EC9A822EEC528F00FF00E9 /* release */ = {
+			isa = PBXGroup;
+			children = (
+				66EC9A812EEC528F00FF00E9 /* composeApp.xcframework */,
+			);
+			path = release;
+			sourceTree = "<group>";
+		};
+		66EC9A832EEC528F00FF00E9 /* XCFrameworks */ = {
+			isa = PBXGroup;
+			children = (
+				66EC9A822EEC528F00FF00E9 /* release */,
+			);
+			name = XCFrameworks;
+			path = ../composeApp/build/XCFrameworks;
 			sourceTree = "<group>";
 		};
 		B697300D510D678A76723433 = {
@@ -105,7 +124,7 @@
 				E065EA9520EA1CAA90E5BFAA /* Sources */,
 				4A413EFB566D24C6B18AC042 /* Frameworks */,
 				F20655DCD4BBC1A1B79011FD /* Resources */,
-				66EC9A5F2EEA469D00FF00E9 /* Embed Frameworks */,
+				66EC9A862EEC529E00FF00E9 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
