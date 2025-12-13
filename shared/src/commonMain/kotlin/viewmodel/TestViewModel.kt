@@ -46,7 +46,6 @@ object TestViewModel {
                                 println("   • Stress: ${entry.ai.emotion.stress}")
                                 println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
                                 println("🎨 Art Prompt:")
-                                println("   ${entry.ai.artPrompt}")
                                 println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
                                 println("🆔 Entry ID: ${entry.id}")
                                 println("⏰ Timestamp: ${entry.timestamp}")

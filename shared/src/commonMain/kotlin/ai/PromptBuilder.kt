@@ -1,4 +1,5 @@
 package ai
+
 object PromptBuilder {
 
     fun buildInterpretationPrompt(rawText: String): String =
@@ -21,29 +22,5 @@ object PromptBuilder {
         User mood description:
         "$rawText"
         """.trimIndent()
-
-    fun buildArtPrompt(normalizedMood: String, emotion: Triple<Float, Float, Float>): String {
-        val (positivity, energy, stress) = emotion
-
-        val moodTone = when {
-            positivity > 0.7 -> "bright and uplifting"
-            stress > 0.7 -> "tense and atmospheric"
-            energy > 0.7 -> "energetic and vibrant"
-            else -> "soft and introspective"
-        }
-
-        return """
-            Create an abstract emotional painting that represents the mood: "$normalizedMood".
-
-            Guidelines:
-            - Overall tone: $moodTone
-            - Use emotional gradients based on values:
-              positivity: $positivity
-              energy: $energy
-              stress: $stress
-            - Style: soft, atmospheric, modern, minimalistic.
-            - Avoid literal imagery.
-        """.trimIndent()
-    }
 }
 

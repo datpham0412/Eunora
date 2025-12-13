@@ -27,7 +27,6 @@ object TestAI {
                 println("   • Energy: ${result.emotion.energy}")
                 println("   • Stress: ${result.emotion.stress}")
                 println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-                println("🎨 Art Prompt: ${result.artPrompt}")
                 println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
                 println("✅ Test completed successfully!")
             } catch (e: Exception) {

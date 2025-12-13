@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class MoodEntry(
     val id: String,
     val rawMoodText: String,
-    val normalizedMood: String,
+    val normalizedMood: NormalizedMood,
     val ai: MoodAIResult,
     val art: MoodArtMetadata,
     val timestamp: Long
@@ -16,7 +16,6 @@ data class MoodEntry(
 data class MoodAIResult(
     val journal: String,
     val advice: String,
-    val artPrompt: String,
     val emotion: MoodEmotionScore
 )
 
@@ -29,7 +28,6 @@ data class MoodEmotionScore(
 
 @Serializable
 data class MoodArtMetadata(
-    val imageUrl: String? = null,
-    val dominantColors: List<String> = emptyList(),
-    val seed: Int? = null
+    val mood: NormalizedMood,
+    val assetId: String? = null
 )

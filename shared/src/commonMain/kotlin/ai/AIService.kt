@@ -57,28 +57,11 @@ class AIService(private val apiKey: String) {
             stress     = emotionObj["stress"]!!.jsonPrimitive.float,
         )
 
-        val artPrompt = PromptBuilder.buildArtPrompt(
-            normalizedMood = extractNormalizedMood(rawText),
-            emotion = Triple(emotion.positivity, emotion.energy, emotion.stress)
-        )
-
         return MoodAIResult(
             journal = journal,
             advice = advice,
-            emotion = emotion,
-            artPrompt = artPrompt
+            emotion = emotion
         )
-    }
-
-    private fun extractNormalizedMood(text: String): String {
-        val lower = text.lowercase()
-        return when {
-            "stress" in lower -> "stressed"
-            "happy" in lower  -> "happy"
-            "sad" in lower    -> "sad"
-            "lonely" in lower -> "lonely"
-            else -> "neutral"
-        }
     }
 }
 
