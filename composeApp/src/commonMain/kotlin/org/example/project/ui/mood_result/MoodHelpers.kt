@@ -4,6 +4,8 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -11,6 +13,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.unit.dp
 import model.MoodEmotionScore
 import model.NormalizedMood
 import kotlin.math.PI
@@ -220,4 +223,19 @@ private fun DrawScope.drawGentleArc(
     }
 
     drawPath(path = path, color = color)
+}
+@Composable
+fun CalmSurface(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(32.dp),
+        color = Color.White, // Pure white for consistent appearance
+        shadowElevation = 0.5.dp, // Very subtle ambient shadow
+        tonalElevation = 0.dp
+    ) {
+        content()
+    }
 }

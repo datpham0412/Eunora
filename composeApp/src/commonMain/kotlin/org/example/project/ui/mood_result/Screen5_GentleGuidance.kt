@@ -9,6 +9,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,57 +23,102 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import model.NormalizedMood
 
+/**
+ * SCREEN 5: GENTLE GUIDANCE
+ * Advice + CTA button
+ * - Abstract background
+ * - Content container for readability
+ * - Typing animation
+ * - Prominent CTA button
+ */
 @Composable
 fun Screen5_GentleGuidance(
     mood: NormalizedMood,
     adviceText: String,
-    onNewMood: () -> Unit
+    onNewMood: () -> Unit,
+    isVisible: Boolean = true
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
+        // Abstract background
         MoodAbstractBackground(mood)
 
+        // Centered content
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 32.dp)
-                .padding(vertical = 60.dp),
-            verticalArrangement = Arrangement.SpaceBetween,
+                .padding(horizontal = 28.dp)
+                .padding(vertical = 40.dp),
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+            // Advice section with container
+            CalmSurface(
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text(
-                    text = "Gentle Guidance",
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White.copy(alpha = 0.95f),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(bottom = 32.dp)
-                )
-
-                Box(
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(max = 400.dp)
-                        .verticalScroll(rememberScrollState())
+                        .heightIn(max = 550.dp)
+                        .padding(40.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    TypewriterText(
-                        text = adviceText,
-                        fontSize = 18.sp,
-                        color = Color.White.copy(alpha = 0.90f),
+                    // Title (dark text for strong contrast)
+                    Text(
+                        text = "Gentle Guidance",
+                        fontSize = 26.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF1F2937), // Near-black
                         textAlign = TextAlign.Center,
-                        delayMs = 20L
+                        modifier = Modifier.padding(bottom = 28.dp)
                     )
+
+                    // Advice with typing animation and scroll indicator
+                    val scrollState = rememberScrollState()
+                    val canScrollDown by remember {
+                        derivedStateOf {
+                            scrollState.value < scrollState.maxValue
+                        }
+                    }
+
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .verticalScroll(scrollState)
+                        ) {
+                            TypewriterText(
+                                text = adviceText,
+                                fontSize = 18.sp,
+                                color = Color(0xFF475569), // Medium gray for body text
+                                textAlign = TextAlign.Center,
+                                delayMs = 40L,
+                                isVisible = isVisible
+                            )
+                        }
+
+                        // Scroll indicator gradient at bottom
+                        if (canScrollDown) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(60.dp)
+                                    .align(Alignment.BottomCenter)
+                                    .background(
+                                        Brush.verticalGradient(
+                                            listOf(
+                                                Color.Transparent,
+                                                Color.White
+                                            )
+                                        )
+                                    )
+                            )
+                        }
+                    }
                 }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            // CTA button
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

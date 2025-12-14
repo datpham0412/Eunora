@@ -14,47 +14,74 @@ import kotlinx.coroutines.delay
 import model.MoodEmotionScore
 import model.NormalizedMood
 
+/**
+ * SCREEN 2: MOOD MEANING
+ * Emoji + mood name + reflective summary
+ * - Abstract background
+ * - Soft content container for readability
+ * - Typing animation effect
+ * - Dark text inside container
+ */
 @Composable
 fun Screen2_MoodMeaning(
     mood: NormalizedMood,
-    emotion: MoodEmotionScore
+    emotion: MoodEmotionScore,
+    isVisible: Boolean = true
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
+        // Abstract background
         MoodAbstractBackground(mood)
 
+        // Centered content with calm surface container
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 40.dp),
+                .padding(horizontal = 28.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = getMoodEmoji(mood),
-                fontSize = 80.sp,
-                modifier = Modifier.padding(bottom = 32.dp)
-            )
+            CalmSurface(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier.padding(40.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    // Large emoji
+                    Text(
+                        text = getMoodEmoji(mood),
+                        fontSize = 80.sp,
+                        modifier = Modifier.padding(bottom = 32.dp)
+                    )
 
-            Text(
-                text = formatMoodName(mood),
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White.copy(alpha = 0.95f),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 24.dp)
-            )
+                    // Mood name (dark text for readability)
+                    Text(
+                        text = formatMoodName(mood),
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF1F2937), // Near-black for strong contrast
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(bottom = 24.dp)
+                    )
 
-            TypewriterText(
-                text = getReflectiveSummary(emotion),
-                fontSize = 20.sp,
-                color = Color.White.copy(alpha = 0.90f),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
+                    // Reflective summary with typing animation
+                    TypewriterText(
+                        text = getReflectiveSummary(emotion),
+                        fontSize = 20.sp,
+                        color = Color(0xFF475569), // Medium gray for body text
+                        textAlign = TextAlign.Center,
+                        isVisible = isVisible
+                    )
+                }
+            }
         }
     }
 }
 
+/**
+ * Typewriter effect composable
+ * Reveals text character by character
+ */
 @Composable
 fun TypewriterText(
     text: String,
@@ -62,15 +89,18 @@ fun TypewriterText(
     color: Color,
     textAlign: TextAlign,
     modifier: Modifier = Modifier,
-    delayMs: Long = 30L
+    delayMs: Long = 60L,
+    isVisible: Boolean = true
 ) {
     var visibleText by remember { mutableStateOf("") }
 
-    LaunchedEffect(text) {
-        visibleText = ""
-        text.forEachIndexed { index, _ ->
-            delay(delayMs)
-            visibleText = text.substring(0, index + 1)
+    LaunchedEffect(text, isVisible) {
+        if (isVisible) {
+            visibleText = ""
+            text.forEachIndexed { index, _ ->
+                delay(delayMs)
+                visibleText = text.substring(0, index + 1)
+            }
         }
     }
 

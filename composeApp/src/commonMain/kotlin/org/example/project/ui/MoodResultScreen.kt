@@ -47,7 +47,8 @@ fun MoodResultScreen(
                 )
                 1 -> Screen2_MoodMeaning(
                     mood = moodEntry.normalizedMood,
-                    emotion = moodEntry.ai.emotion
+                    emotion = moodEntry.ai.emotion,
+                    isVisible = pagerState.currentPage == page
                 )
                 2 -> Screen3_EmotionalSpectrums(
                     mood = moodEntry.normalizedMood,
@@ -55,12 +56,14 @@ fun MoodResultScreen(
                 )
                 3 -> Screen4_YourReflection(
                     mood = moodEntry.normalizedMood,
-                    journalText = moodEntry.ai.journal
+                    journalText = moodEntry.ai.journal,
+                    isVisible = pagerState.currentPage == page
                 )
                 4 -> Screen5_GentleGuidance(
                     mood = moodEntry.normalizedMood,
                     adviceText = moodEntry.ai.advice,
-                    onNewMood = onNewMood
+                    onNewMood = onNewMood,
+                    isVisible = pagerState.currentPage == page
                 )
             }
         }

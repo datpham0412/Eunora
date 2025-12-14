@@ -18,73 +18,91 @@ import androidx.compose.ui.unit.sp
 import model.MoodEmotionScore
 import model.NormalizedMood
 
+/**
+ * SCREEN 3: EMOTIONAL SPECTRUMS
+ * Visual-only emotion spectrums
+ * - Abstract background
+ * - Content container for readability
+ * - Dark text labels
+ * - No percentages
+ */
 @Composable
 fun Screen3_EmotionalSpectrums(
     mood: NormalizedMood,
     emotion: MoodEmotionScore
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
+        // Abstract background
         MoodAbstractBackground(mood)
 
+        // Centered content with container
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 32.dp),
+                .padding(horizontal = 28.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "How you're feeling",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White.copy(alpha = 0.95f),
-                modifier = Modifier.padding(bottom = 48.dp)
-            )
-
-            Column(
-                verticalArrangement = Arrangement.spacedBy(40.dp)
+            CalmSurface(
+                modifier = Modifier.fillMaxWidth()
             ) {
-                EmotionalSpectrum(
-                    label = "Emotional tone",
-                    leftLabel = "Difficult",
-                    rightLabel = "Positive",
-                    position = emotion.positivity,
-                    gradient = Brush.horizontalGradient(
-                        listOf(
-                            Color(0xFF9CA3AF).copy(alpha = 0.3f),
-                            Color(0xFF10B981).copy(alpha = 0.3f)
-                        )
-                    ),
-                    markerColor = Color(0xFF10B981)
-                )
+                Column(
+                    modifier = Modifier.padding(40.dp),
+                    verticalArrangement = Arrangement.spacedBy(36.dp)
+                ) {
+                    // Heading (dark text for contrast)
+                    Text(
+                        text = "How you're feeling",
+                        fontSize = 26.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF1F2937) // Near-black
+                    )
 
-                EmotionalSpectrum(
-                    label = "Energy level",
-                    leftLabel = "Resting",
-                    rightLabel = "Energized",
-                    position = emotion.energy,
-                    gradient = Brush.horizontalGradient(
-                        listOf(
-                            Color(0xFFA78BFA).copy(alpha = 0.3f),
-                            Color(0xFFF59E0B).copy(alpha = 0.3f)
-                        )
-                    ),
-                    markerColor = Color(0xFFF59E0B)
-                )
+                    // Spectrum 1: Emotional tone
+                    EmotionalSpectrum(
+                        label = "Emotional tone",
+                        leftLabel = "Difficult",
+                        rightLabel = "Positive",
+                        position = emotion.positivity,
+                        gradient = Brush.horizontalGradient(
+                            listOf(
+                                Color(0xFF9CA3AF).copy(alpha = 0.3f),
+                                Color(0xFF10B981).copy(alpha = 0.3f)
+                            )
+                        ),
+                        markerColor = Color(0xFF10B981)
+                    )
 
-                EmotionalSpectrum(
-                    label = "Inner state",
-                    leftLabel = "At ease",
-                    rightLabel = "Tense",
-                    position = emotion.stress,
-                    gradient = Brush.horizontalGradient(
-                        listOf(
-                            Color(0xFF10B981).copy(alpha = 0.3f),
-                            Color(0xFFF97316).copy(alpha = 0.3f)
-                        )
-                    ),
-                    markerColor = if (emotion.stress > 0.6f) Color(0xFFF97316) else Color(0xFF10B981)
-                )
+                    // Spectrum 2: Energy level
+                    EmotionalSpectrum(
+                        label = "Energy level",
+                        leftLabel = "Resting",
+                        rightLabel = "Energized",
+                        position = emotion.energy,
+                        gradient = Brush.horizontalGradient(
+                            listOf(
+                                Color(0xFFA78BFA).copy(alpha = 0.3f),
+                                Color(0xFFF59E0B).copy(alpha = 0.3f)
+                            )
+                        ),
+                        markerColor = Color(0xFFF59E0B)
+                    )
+
+                    // Spectrum 3: Inner state
+                    EmotionalSpectrum(
+                        label = "Inner state",
+                        leftLabel = "At ease",
+                        rightLabel = "Tense",
+                        position = emotion.stress,
+                        gradient = Brush.horizontalGradient(
+                            listOf(
+                                Color(0xFF10B981).copy(alpha = 0.3f),
+                                Color(0xFFF97316).copy(alpha = 0.3f)
+                            )
+                        ),
+                        markerColor = if (emotion.stress > 0.6f) Color(0xFFF97316) else Color(0xFF10B981)
+                    )
+                }
             }
         }
     }
@@ -102,14 +120,16 @@ private fun EmotionalSpectrum(
     Column(
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
+        // Label (dark text for readability inside container)
         Text(
             text = label,
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
-            color = Color.White.copy(alpha = 0.90f),
+            color = Color(0xFF334155), // Medium slate gray
             letterSpacing = 0.5.sp
         )
 
+        // Spectrum bar
         BoxWithConstraints(
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -118,6 +138,7 @@ private fun EmotionalSpectrum(
             val availableWidth = maxWidthPx - markerSize
             val markerOffset = availableWidth * position.coerceIn(0f, 1f)
 
+            // Gradient bar
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -126,6 +147,7 @@ private fun EmotionalSpectrum(
                     .background(gradient)
             )
 
+            // Marker
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterStart)
@@ -141,6 +163,7 @@ private fun EmotionalSpectrum(
             )
         }
 
+        // End labels (medium gray for secondary text)
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -149,13 +172,13 @@ private fun EmotionalSpectrum(
                 text = leftLabel,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Normal,
-                color = Color.White.copy(alpha = 0.75f)
+                color = Color(0xFF64748B) // Lighter gray for secondary
             )
             Text(
                 text = rightLabel,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Normal,
-                color = Color.White.copy(alpha = 0.75f)
+                color = Color(0xFF64748B)
             )
         }
     }
