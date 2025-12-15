@@ -1,5 +1,7 @@
 package org.example.project.ui.mood_result
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -7,6 +9,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,7 +32,8 @@ import model.NormalizedMood
 @Composable
 fun Screen3_EmotionalSpectrums(
     mood: NormalizedMood,
-    emotion: MoodEmotionScore
+    emotion: MoodEmotionScore,
+    isVisible: Boolean = true
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         // Abstract background
@@ -70,7 +74,8 @@ fun Screen3_EmotionalSpectrums(
                                 Color(0xFF10B981).copy(alpha = 0.3f)
                             )
                         ),
-                        markerColor = Color(0xFF10B981)
+                        markerColor = Color(0xFF10B981),
+                        isVisible = isVisible
                     )
 
                     // Spectrum 2: Energy level
@@ -85,7 +90,8 @@ fun Screen3_EmotionalSpectrums(
                                 Color(0xFFF59E0B).copy(alpha = 0.3f)
                             )
                         ),
-                        markerColor = Color(0xFFF59E0B)
+                        markerColor = Color(0xFFF59E0B),
+                        isVisible = isVisible
                     )
 
                     // Spectrum 3: Inner state
@@ -100,7 +106,8 @@ fun Screen3_EmotionalSpectrums(
                                 Color(0xFFF97316).copy(alpha = 0.3f)
                             )
                         ),
-                        markerColor = if (emotion.stress > 0.6f) Color(0xFFF97316) else Color(0xFF10B981)
+                        markerColor = if (emotion.stress > 0.6f) Color(0xFFF97316) else Color(0xFF10B981),
+                        isVisible = isVisible
                     )
                 }
             }
@@ -115,8 +122,16 @@ private fun EmotionalSpectrum(
     rightLabel: String,
     position: Float,
     gradient: Brush,
-    markerColor: Color
+    markerColor: Color,
+    isVisible: Boolean = true
 ) {
+    // Animate marker position from center (0.5) to actual position
+    val animatedPosition by animateFloatAsState(
+        targetValue = if (isVisible) position else 0.5f,
+        animationSpec = tween(durationMillis = 1200),
+        label = "markerPosition"
+    )
+
     Column(
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
@@ -136,7 +151,7 @@ private fun EmotionalSpectrum(
             val maxWidthPx = maxWidth
             val markerSize = 24.dp
             val availableWidth = maxWidthPx - markerSize
-            val markerOffset = availableWidth * position.coerceIn(0f, 1f)
+            val markerOffset = availableWidth * animatedPosition.coerceIn(0f, 1f)
 
             // Gradient bar
             Box(

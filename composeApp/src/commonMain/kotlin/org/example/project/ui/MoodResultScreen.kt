@@ -52,7 +52,8 @@ fun MoodResultScreen(
                 )
                 2 -> Screen3_EmotionalSpectrums(
                     mood = moodEntry.normalizedMood,
-                    emotion = moodEntry.ai.emotion
+                    emotion = moodEntry.ai.emotion,
+                    isVisible = pagerState.currentPage == page
                 )
                 3 -> Screen4_YourReflection(
                     mood = moodEntry.normalizedMood,

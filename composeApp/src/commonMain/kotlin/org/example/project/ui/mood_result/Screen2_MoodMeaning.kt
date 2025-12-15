@@ -70,6 +70,7 @@ fun Screen2_MoodMeaning(
                         fontSize = 20.sp,
                         color = Color(0xFF475569), // Medium gray for body text
                         textAlign = TextAlign.Center,
+                        delayMs = 40L,
                         isVisible = isVisible
                     )
                 }
@@ -89,7 +90,7 @@ fun TypewriterText(
     color: Color,
     textAlign: TextAlign,
     modifier: Modifier = Modifier,
-    delayMs: Long = 60L,
+    delayMs: Long = 40L,
     isVisible: Boolean = true
 ) {
     var visibleText by remember { mutableStateOf("") }

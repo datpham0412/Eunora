@@ -61,15 +61,25 @@ fun Screen5_GentleGuidance(
                         .padding(40.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Title (dark text for strong contrast)
-                    Text(
-                        text = "Gentle Guidance",
-                        fontSize = 26.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1F2937), // Near-black
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(bottom = 28.dp)
-                    )
+                    // Title with icon
+                    Row(
+                        modifier = Modifier.padding(bottom = 28.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "💡",
+                            fontSize = 28.sp,
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                        Text(
+                            text = "Gentle Guidance",
+                            fontSize = 26.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF1F2937), // Near-black
+                            textAlign = TextAlign.Center
+                        )
+                    }
 
                     // Advice with typing animation and scroll indicator
                     val scrollState = rememberScrollState()
