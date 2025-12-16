@@ -155,6 +155,8 @@ fun TypewriterText(
     color: Color,
     textAlign: TextAlign,
     modifier: Modifier = Modifier,
+    fontWeight: FontWeight = FontWeight.Normal,
+    lineHeight: androidx.compose.ui.unit.TextUnit = 32.sp,
     delayMs: Long = 40L,
     isVisible: Boolean = true
 ) {
@@ -173,10 +175,10 @@ fun TypewriterText(
     Text(
         text = visibleText,
         fontSize = fontSize,
-        fontWeight = FontWeight.Normal,
+        fontWeight = fontWeight,
         color = color,
         textAlign = textAlign,
-        lineHeight = 32.sp,
+        lineHeight = lineHeight,
         modifier = modifier
     )
 }
