@@ -45,6 +45,9 @@ kotlin {
             baseName = "ComposeApp"
             isStatic = true
             xcf.add(this)
+
+            // CRITICAL: Link SQLite for all binaries
+            linkerOpts("-lsqlite3")
         }
     }
 
