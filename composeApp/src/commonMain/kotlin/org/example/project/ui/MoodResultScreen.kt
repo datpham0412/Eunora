@@ -21,7 +21,8 @@ import org.jetbrains.compose.resources.DrawableResource
 @Composable
 fun MoodResultScreen(
     moodEntry: MoodEntry,
-    onNewMood: () -> Unit
+    onNewMood: () -> Unit,
+    onHistoryClick: () -> Unit = {}
 ) {
     val backgroundColor = extractMoodBackgroundColor(moodEntry.normalizedMood)
 
