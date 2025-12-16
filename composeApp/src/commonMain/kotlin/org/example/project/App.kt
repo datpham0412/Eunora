@@ -6,21 +6,47 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ai.AIService
 import com.example.shared.ApiConfig
-import org.example.project.ui.MoodInputScreen
-import org.example.project.ui.MoodResultScreen
+import com.example.shared.db.MoodDatabase
+import database.DatabaseDriverFactory
+import org.example.project.ui.*
 import repository.MoodRepository
-import viewmodel.MoodViewModel
+import viewmodel.*
+
+sealed class Screen {
+    object Input : Screen()
+    data class Result(val entryId: String) : Screen()
+    object History : Screen()
+    data class Detail(val entryId: String) : Screen()
+}
+
+@Composable
+expect fun getPlatformContext(): Any
+
+expect fun createMoodDatabase(context: Any): MoodDatabase
 
 @Composable
 fun App() {
-    // Initialize ViewModel
-    val viewModel = remember {
+    val context = getPlatformContext()
+
+    // Initialize database and repository
+    val database = remember(context) { createMoodDatabase(context) }
+
+    val repository = remember {
         val aiService = AIService(ApiConfig.GEMINI_API_KEY)
-        val repository = MoodRepository(aiService)
+        MoodRepository(aiService, database)
+    }
+
+    // Initialize main ViewModel
+    val moodViewModel = remember {
         MoodViewModel(repository)
     }
 
-    val uiState by viewModel.state.collectAsState()
+    val uiState by moodViewModel.state.collectAsState()
+
+    // Navigation state
+    var currentScreen by remember { mutableStateOf<Screen>(Screen.Input) }
+    var historyViewModel: MoodHistoryViewModel? by remember { mutableStateOf(null) }
+    var detailViewModel: MoodDetailViewModel? by remember { mutableStateOf(null) }
 
     MaterialTheme(
         colorScheme = lightColorScheme(
@@ -33,33 +59,82 @@ fun App() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            when {
-                uiState.currentMoodEntry != null -> {
-                    // Show results
-                    MoodResultScreen(
-                        moodEntry = uiState.currentMoodEntry!!,
-                        onNewMood = { viewModel.clearMood() }
-                    )
-                }
-                else -> {
-                    // Show input screen
+            when (val screen = currentScreen) {
+                is Screen.Input -> {
                     MoodInputScreen(
                         userInput = uiState.userInput,
                         isLoading = uiState.isLoading,
                         error = uiState.error,
-                        onInputChange = { viewModel.onInputChange(it) },
-                        onAnalyze = { viewModel.analyzeMood() },
-                        onClearError = { viewModel.clearError() }
+                        onInputChange = { moodViewModel.onInputChange(it) },
+                        onAnalyze = { moodViewModel.analyzeMood() },
+                        onClearError = { moodViewModel.clearError() },
+                        onHistoryClick = {
+                            historyViewModel = MoodHistoryViewModel(repository)
+                            currentScreen = Screen.History
+                        }
                     )
                 }
+
+                is Screen.Result -> {
+                    uiState.currentMoodEntry?.let { entry ->
+                        MoodResultScreen(
+                            moodEntry = entry,
+                            onNewMood = {
+                                moodViewModel.clearMood()
+                                currentScreen = Screen.Input
+                            },
+                            onHistoryClick = {
+                                historyViewModel = MoodHistoryViewModel(repository)
+                                currentScreen = Screen.History
+                            }
+                        )
+                    }
+                }
+
+                is Screen.History -> {
+                    historyViewModel?.let { vm ->
+                        MoodHistoryScreen(
+                            viewModel = vm,
+                            onEntryClick = { entryId ->
+                                detailViewModel = MoodDetailViewModel(repository, entryId)
+                                currentScreen = Screen.Detail(entryId)
+                            },
+                            onBackClick = {
+                                historyViewModel = null
+                                currentScreen = Screen.Input
+                            }
+                        )
+                    }
+                }
+
+                is Screen.Detail -> {
+                    detailViewModel?.let { vm ->
+                        MoodDetailScreen(
+                            viewModel = vm,
+                            onBackClick = {
+                                detailViewModel = null
+                                currentScreen = Screen.History
+                            }
+                        )
+                    }
+                }
             }
+        }
+    }
+
+    // Update screen when mood entry is created
+    LaunchedEffect(uiState.currentMoodEntry) {
+        if (uiState.currentMoodEntry != null) {
+            currentScreen = Screen.Result(uiState.currentMoodEntry!!.id)
         }
     }
 
     // Cleanup when composable leaves composition
     DisposableEffect(Unit) {
         onDispose {
-            viewModel.onCleared()
+            moodViewModel.onCleared()
+            historyViewModel?.onCleared()
+            detailViewModel?.onCleared()
         }
     }
 }
