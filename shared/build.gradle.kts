@@ -5,6 +5,7 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     kotlin("plugin.serialization") version "2.0.0"
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
@@ -22,6 +23,9 @@ kotlin {
             baseName = "shared"
             isStatic = true
             xcf.add(this)
+
+            // CRITICAL: Link SQLite for all binaries
+            linkerOpts("-lsqlite3")
         }
     }
 
@@ -34,12 +38,15 @@ kotlin {
                 implementation("io.ktor:ktor-client-content-negotiation:2.3.5")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.5")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+                implementation(libs.sqldelight.runtime)
+                implementation(libs.sqldelight.coroutines)
             }
         }
 
         val androidMain by getting {
             dependencies {
                 implementation("io.ktor:ktor-client-okhttp:2.3.5")
+                implementation(libs.sqldelight.android)
             }
         }
 
@@ -47,6 +54,7 @@ kotlin {
             dependsOn(commonMain)
             dependencies {
                 implementation("io.ktor:ktor-client-darwin:2.3.5")
+                implementation(libs.sqldelight.native)
             }
         }
 
@@ -97,4 +105,13 @@ android {
     defaultConfig {
         minSdk = 24
     }
+}
+
+sqldelight {
+    databases {
+        create("MoodDatabase") {
+            packageName.set("com.example.shared.db")
+        }
+    }
+    linkSqlite = true
 }
