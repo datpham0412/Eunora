@@ -180,13 +180,14 @@ private fun buildPageFlow(moodGroup: MoodGroup): List<PageType> {
 
 /**
  * Check if page is a marker (disable swipe for markers)
+ * Note: HighlightMarker allows swipe so user can skip without typing
  */
 private fun isMarkerPage(pageType: PageType): Boolean {
     return when (pageType) {
         is PageType.CoreScreen -> false
         PageType.PauseMarker,
-        PageType.PermissionMarker,
-        PageType.HighlightMarker -> true
+        PageType.PermissionMarker -> true
+        PageType.HighlightMarker -> false  // Allow swipe for HIGHLIGHT MARKER
     }
 }
 

@@ -105,14 +105,29 @@ private fun MoodNameText(
         verticalArrangement = Arrangement.Center
     ) {
         words.forEach { word ->
+            // Adjust font size for long words to prevent overflow
+            val fontSize = when {
+                word.length > 10 -> 46.sp  // "overwhelmed" (11 chars)
+                word.length > 8 -> 52.sp   // "energetic" (9 chars)
+                else -> 58.sp              // Normal size
+            }
+
+            val letterSpacing = when {
+                word.length > 10 -> 4.sp   // Reduce letter spacing for very long words
+                word.length > 8 -> 5.sp
+                else -> 6.sp
+            }
+
             Text(
                 text = word,
-                fontSize = 58.sp,
+                fontSize = fontSize,
                 fontWeight = FontWeight.Bold,
                 color = Color.White.copy(alpha = 0.95f),
                 textAlign = TextAlign.Center,
-                letterSpacing = 6.sp,
-                modifier = Modifier.fillMaxWidth()
+                letterSpacing = letterSpacing,
+                modifier = Modifier.fillMaxWidth(),
+                maxLines = 1,
+                softWrap = false
             )
         }
     }

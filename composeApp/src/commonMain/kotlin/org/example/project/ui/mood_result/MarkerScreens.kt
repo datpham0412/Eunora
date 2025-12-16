@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -279,6 +280,7 @@ fun HighlightMarker(
     onComplete: (String?) -> Unit
 ) {
     var inputText by remember { mutableStateOf("") }
+    var isFocused by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
     val baseColor = getMoodColor(mood)
     val backgroundColor = extractMoodBackgroundColor(mood)
@@ -286,7 +288,6 @@ fun HighlightMarker(
     var showContainer by remember { mutableStateOf(false) }
     var showPrompt by remember { mutableStateOf(false) }
     var showInput by remember { mutableStateOf(false) }
-    var showButton by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         delay(100)
@@ -295,8 +296,6 @@ fun HighlightMarker(
         showPrompt = true
         delay(400)
         showInput = true
-        delay(300)
-        showButton = true
     }
 
     Box(
@@ -361,7 +360,10 @@ fun HighlightMarker(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .background(baseColor.copy(alpha = 0.05f), RoundedCornerShape(12.dp))
-                                    .padding(16.dp),
+                                    .padding(16.dp)
+                                    .onFocusChanged { focusState ->
+                                        isFocused = focusState.isFocused
+                                    },
                                 textStyle = TextStyle(
                                     fontSize = 18.sp,
                                     color = Color(0xFF1F2937), // Standard text color
@@ -373,7 +375,8 @@ fun HighlightMarker(
                                         modifier = Modifier.fillMaxWidth(),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        if (inputText.isEmpty()) {
+                                        // Show placeholder only when not focused and empty
+                                        if (inputText.isEmpty() && !isFocused) {
                                             Text(
                                                 text = "A word, a feeling, or a moment",
                                                 fontSize = 18.sp,
@@ -387,9 +390,9 @@ fun HighlightMarker(
                             )
                         }
 
-                        // Continue button
+                        // Continue button - only show when user has typed something
                         AnimatedVisibility(
-                            visible = showButton,
+                            visible = inputText.isNotEmpty(),
                             enter = fadeIn(animationSpec = tween(500))
                         ) {
                             Button(

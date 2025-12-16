@@ -114,13 +114,23 @@ fun Screen2_MoodMeaning(
                             animationSpec = tween(600, easing = FastOutSlowInEasing)
                         ) + fadeIn(animationSpec = tween(600))
                     ) {
+                        val formattedName = formatMoodName(mood)
+                        // Adjust font size for longer mood names
+                        val fontSize = when {
+                            formattedName.length > 15 -> 26.sp  // "Happy Energetic" (15 chars)
+                            formattedName.length > 12 -> 28.sp  // "Overwhelmed" (11 chars)
+                            else -> 32.sp                        // Normal size
+                        }
+
                         Text(
-                            text = formatMoodName(mood),
-                            fontSize = 32.sp,
+                            text = formattedName,
+                            fontSize = fontSize,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF1F2937),
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(bottom = 24.dp)
+                            modifier = Modifier.padding(bottom = 24.dp),
+                            maxLines = 1,
+                            softWrap = false
                         )
                     }
 
