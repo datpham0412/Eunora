@@ -31,7 +31,8 @@ fun MoodInputScreen(
     error: String?,
     onInputChange: (String) -> Unit,
     onAnalyze: () -> Unit,
-    onClearError: () -> Unit
+    onClearError: () -> Unit,
+    onHistoryClick: () -> Unit = {}
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -302,6 +303,21 @@ fun MoodInputScreen(
                         )
                     }
                 }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // History button
+            TextButton(
+                onClick = onHistoryClick,
+                enabled = !isLoading
+            ) {
+                Text(
+                    "📖 View History",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color(0xFF6B7280)
+                )
             }
         }
     }
