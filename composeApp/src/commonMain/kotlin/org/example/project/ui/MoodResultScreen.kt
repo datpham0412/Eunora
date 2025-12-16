@@ -93,6 +93,7 @@ fun MoodResultScreen(
                 }
                 PageType.PauseMarker -> {
                     PauseMarker(
+                        mood = moodEntry.normalizedMood,
                         onComplete = {
                             coroutineScope.launch {
                                 pagerState.animateScrollToPage(page + 1)
@@ -102,6 +103,7 @@ fun MoodResultScreen(
                 }
                 PageType.PermissionMarker -> {
                     PermissionMarker(
+                        mood = moodEntry.normalizedMood,
                         onContinue = {
                             coroutineScope.launch {
                                 pagerState.animateScrollToPage(page + 1)
@@ -112,6 +114,7 @@ fun MoodResultScreen(
                 }
                 PageType.HighlightMarker -> {
                     HighlightMarker(
+                        mood = moodEntry.normalizedMood,
                         onComplete = { input ->
                             // Optional: Save input somewhere if needed
                             coroutineScope.launch {
