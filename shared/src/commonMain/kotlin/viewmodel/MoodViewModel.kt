@@ -20,7 +20,7 @@ class MoodViewModel(
         _state.update {
             it.copy(
                 isLoading = false,
-                error = "Failed to analyze mood: ${exception.message}"
+                error = getFriendlyErrorMessage(exception)
             )
         }
     }
@@ -57,7 +57,7 @@ class MoodViewModel(
                 _state.update {
                     it.copy(
                         isLoading = false,
-                        error = "Failed to analyze mood: ${e.message}"
+                        error = getFriendlyErrorMessage(e)
                     )
                 }
             }
@@ -73,5 +73,35 @@ class MoodViewModel(
     }
     fun onCleared() {
         scope.cancel()
+    }
+
+    private fun getFriendlyErrorMessage(exception: Throwable): String {
+        val message = exception.message ?: ""
+
+        return when {
+            message.contains("Unable to resolve host") ||
+            message.contains("No address associated") ||
+            message.contains("UnknownHostException") ||
+            message.contains("timeout") ||
+            message.contains("SocketTimeoutException") ->
+                "No internet connection. Please check your network and try again."
+
+            message.contains("API key") ||
+            message.contains("401") ||
+            message.contains("403") ->
+                "API authentication failed. Please check your API key configuration."
+
+            message.contains("429") ||
+            message.contains("quota") ->
+                "API quota exceeded. Please try again later."
+
+            message.contains("500") ||
+            message.contains("502") ||
+            message.contains("503") ->
+                "Service temporarily unavailable. Please try again in a moment."
+
+            else ->
+                "Something went wrong. Please try again."
+        }
     }
 }
