@@ -116,7 +116,7 @@ fun Screen3_EmotionalSpectrums(
 }
 
 @Composable
-private fun EmotionalSpectrum(
+internal fun EmotionalSpectrum(
     label: String,
     leftLabel: String,
     rightLabel: String,
