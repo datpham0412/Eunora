@@ -1,0 +1,29 @@
+CREATE TABLE mood_entries (
+  id TEXT PRIMARY KEY NOT NULL,
+  raw_mood_text TEXT NOT NULL,
+  normalized_mood TEXT NOT NULL,
+  ai_result_json TEXT NOT NULL,
+  art_metadata_json TEXT NOT NULL,
+  timestamp INTEGER NOT NULL
+);
+
+CREATE INDEX idx_timestamp ON mood_entries(timestamp DESC);
+
+selectAll:
+SELECT * FROM mood_entries ORDER BY timestamp DESC;
+
+selectById:
+SELECT * FROM mood_entries WHERE id = ?;
+
+insert:
+INSERT OR REPLACE INTO mood_entries (id, raw_mood_text, normalized_mood, ai_result_json, art_metadata_json, timestamp)
+VALUES (?, ?, ?, ?, ?, ?);
+
+deleteById:
+DELETE FROM mood_entries WHERE id = ?;
+
+deleteAll:
+DELETE FROM mood_entries;
+
+count:
+SELECT COUNT(*) FROM mood_entries;
