@@ -1,11 +1,17 @@
 package org.example.project.ui.mood_result
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.*
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -21,6 +27,7 @@ import model.NormalizedMood
  * - Soft content container for readability
  * - Typing animation effect
  * - Dark text inside container
+ * - Staggered entrance animations
  */
 @Composable
 fun Screen2_MoodMeaning(
@@ -28,6 +35,36 @@ fun Screen2_MoodMeaning(
     emotion: MoodEmotionScore,
     isVisible: Boolean = true
 ) {
+    var showEmoji by remember { mutableStateOf(false) }
+    var showMoodName by remember { mutableStateOf(false) }
+    var showSummary by remember { mutableStateOf(false) }
+
+    // Gentle floating animation for emoji
+    val infiniteTransition = rememberInfiniteTransition()
+    val emojiFloat by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = -8f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
+    LaunchedEffect(isVisible) {
+        if (isVisible) {
+            delay(200)
+            showEmoji = true
+            delay(300)
+            showMoodName = true
+            delay(400)
+            showSummary = true
+        } else {
+            showEmoji = false
+            showMoodName = false
+            showSummary = false
+        }
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         // Abstract background
         MoodAbstractBackground(mood)
@@ -47,32 +84,60 @@ fun Screen2_MoodMeaning(
                     modifier = Modifier.padding(40.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Large emoji
-                    Text(
-                        text = getMoodEmoji(mood),
-                        fontSize = 80.sp,
-                        modifier = Modifier.padding(bottom = 32.dp)
-                    )
+                    // Animated emoji with floating effect
+                    AnimatedVisibility(
+                        visible = showEmoji,
+                        enter = scaleIn(
+                            initialScale = 0.3f,
+                            animationSpec = spring(
+                                dampingRatio = Spring.DampingRatioMediumBouncy,
+                                stiffness = Spring.StiffnessLow
+                            )
+                        ) + fadeIn(animationSpec = tween(500))
+                    ) {
+                        Text(
+                            text = getMoodEmoji(mood),
+                            fontSize = 80.sp,
+                            modifier = Modifier
+                                .padding(bottom = 32.dp)
+                                .graphicsLayer {
+                                    translationY = emojiFloat
+                                }
+                        )
+                    }
 
-                    // Mood name (dark text for readability)
-                    Text(
-                        text = formatMoodName(mood),
-                        fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1F2937), // Near-black for strong contrast
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(bottom = 24.dp)
-                    )
+                    // Mood name with slide up animation
+                    AnimatedVisibility(
+                        visible = showMoodName,
+                        enter = slideInVertically(
+                            initialOffsetY = { it / 2 },
+                            animationSpec = tween(600, easing = FastOutSlowInEasing)
+                        ) + fadeIn(animationSpec = tween(600))
+                    ) {
+                        Text(
+                            text = formatMoodName(mood),
+                            fontSize = 32.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF1F2937),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(bottom = 24.dp)
+                        )
+                    }
 
                     // Reflective summary with typing animation
-                    TypewriterText(
-                        text = getReflectiveSummary(emotion),
-                        fontSize = 20.sp,
-                        color = Color(0xFF475569), // Medium gray for body text
-                        textAlign = TextAlign.Center,
-                        delayMs = 40L,
-                        isVisible = isVisible
-                    )
+                    AnimatedVisibility(
+                        visible = showSummary,
+                        enter = fadeIn(animationSpec = tween(800))
+                    ) {
+                        TypewriterText(
+                            text = getReflectiveSummary(emotion),
+                            fontSize = 20.sp,
+                            color = Color(0xFF475569),
+                            textAlign = TextAlign.Center,
+                            delayMs = 40L,
+                            isVisible = showSummary
+                        )
+                    }
                 }
             }
         }

@@ -1,17 +1,23 @@
 package org.example.project.ui.mood_result
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.*
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
 import model.NormalizedMood
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.DrawableResource
@@ -24,8 +30,36 @@ fun Screen1_VibeOnly(
     artAssetId: String?,
     getMoodArtworkResource: (NormalizedMood, String?) -> DrawableResource?
 ) {
+    var showContent by remember { mutableStateOf(false) }
+
+    // Breathing animation for background
+    val infiniteTransition = rememberInfiniteTransition()
+    val breathingScale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.05f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(3000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
+    LaunchedEffect(Unit) {
+        delay(200)
+        showContent = true
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
-        MoodAbstractBackground(mood)
+        // Background with gentle breathing effect
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer {
+                    scaleX = breathingScale
+                    scaleY = breathingScale
+                }
+        ) {
+            MoodAbstractBackground(mood)
+        }
 
         val imageResource = getMoodArtworkResource(mood, artAssetId)
         if (imageResource != null) {
@@ -37,10 +71,19 @@ fun Screen1_VibeOnly(
             )
         }
 
-        MoodNameText(
-            mood = mood,
+        // Animated mood name reveal
+        AnimatedVisibility(
+            visible = showContent,
+            enter = fadeIn(
+                animationSpec = tween(800, easing = FastOutSlowInEasing)
+            ) + scaleIn(
+                initialScale = 0.7f,
+                animationSpec = tween(800, easing = FastOutSlowInEasing)
+            ),
             modifier = Modifier.align(Alignment.Center)
-        )
+        ) {
+            MoodNameText(mood = mood)
+        }
     }
 }
 

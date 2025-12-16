@@ -1,5 +1,10 @@
 package org.example.project.ui.mood_result
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.*
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -8,19 +13,18 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
 import model.NormalizedMood
 
 /**
@@ -30,6 +34,7 @@ import model.NormalizedMood
  * - Content container for readability
  * - Typing animation
  * - Prominent CTA button
+ * - Animated entrance and pulse button
  */
 @Composable
 fun Screen5_GentleGuidance(
@@ -38,6 +43,40 @@ fun Screen5_GentleGuidance(
     onNewMood: () -> Unit,
     isVisible: Boolean = true
 ) {
+    var showContainer by remember { mutableStateOf(false) }
+    var showTitle by remember { mutableStateOf(false) }
+    var showContent by remember { mutableStateOf(false) }
+    var showButton by remember { mutableStateOf(false) }
+
+    // Subtle pulse animation for the button
+    val infiniteTransition = rememberInfiniteTransition()
+    val buttonScale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.02f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1500, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
+    LaunchedEffect(isVisible) {
+        if (isVisible) {
+            delay(100)
+            showContainer = true
+            delay(300)
+            showTitle = true
+            delay(400)
+            showContent = true
+            delay(600)
+            showButton = true
+        } else {
+            showContainer = false
+            showTitle = false
+            showContent = false
+            showButton = false
+        }
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         // Abstract background
         MoodAbstractBackground(mood)
@@ -51,76 +90,97 @@ fun Screen5_GentleGuidance(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Advice section with container
-            CalmSurface(
-                modifier = Modifier.fillMaxWidth()
+            // Animated advice section with container
+            AnimatedVisibility(
+                visible = showContainer,
+                enter = scaleIn(
+                    initialScale = 0.9f,
+                    animationSpec = tween(600, easing = FastOutSlowInEasing)
+                ) + fadeIn(animationSpec = tween(600))
             ) {
-                Column(
-                    modifier = Modifier
-                        .heightIn(max = 550.dp)
-                        .padding(40.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                CalmSurface(
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    // Title with icon
-                    Row(
-                        modifier = Modifier.padding(bottom = 28.dp),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
+                    Column(
+                        modifier = Modifier
+                            .heightIn(max = 550.dp)
+                            .padding(40.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
-                            text = "💡",
-                            fontSize = 28.sp,
-                            modifier = Modifier.padding(end = 8.dp)
-                        )
-                        Text(
-                            text = "Gentle Guidance",
-                            fontSize = 26.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1F2937), // Near-black
-                            textAlign = TextAlign.Center
-                        )
-                    }
-
-                    // Advice with typing animation and scroll indicator
-                    val scrollState = rememberScrollState()
-                    val canScrollDown by remember {
-                        derivedStateOf {
-                            scrollState.value < scrollState.maxValue
-                        }
-                    }
-
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .verticalScroll(scrollState)
+                        // Animated title with icon
+                        AnimatedVisibility(
+                            visible = showTitle,
+                            enter = slideInVertically(
+                                initialOffsetY = { -it / 2 },
+                                animationSpec = tween(500, easing = FastOutSlowInEasing)
+                            ) + fadeIn(animationSpec = tween(500))
                         ) {
-                            TypewriterText(
-                                text = adviceText,
-                                fontSize = 18.sp,
-                                color = Color(0xFF475569), // Medium gray for body text
-                                textAlign = TextAlign.Center,
-                                delayMs = 40L,
-                                isVisible = isVisible
-                            )
+                            Row(
+                                modifier = Modifier.padding(bottom = 28.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "💡",
+                                    fontSize = 28.sp,
+                                    modifier = Modifier.padding(end = 8.dp)
+                                )
+                                Text(
+                                    text = "Gentle Guidance",
+                                    fontSize = 26.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF1F2937),
+                                    textAlign = TextAlign.Center
+                                )
+                            }
                         }
 
-                        // Scroll indicator gradient at bottom
-                        if (canScrollDown) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(60.dp)
-                                    .align(Alignment.BottomCenter)
-                                    .background(
-                                        Brush.verticalGradient(
-                                            listOf(
-                                                Color.Transparent,
-                                                Color.White
-                                            )
-                                        )
+                        // Advice with typing animation and scroll indicator
+                        val scrollState = rememberScrollState()
+                        val canScrollDown by remember {
+                            derivedStateOf {
+                                scrollState.value < scrollState.maxValue
+                            }
+                        }
+
+                        AnimatedVisibility(
+                            visible = showContent,
+                            enter = fadeIn(animationSpec = tween(800))
+                        ) {
+                            Box(modifier = Modifier.fillMaxWidth()) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .verticalScroll(scrollState)
+                                ) {
+                                    TypewriterText(
+                                        text = adviceText,
+                                        fontSize = 18.sp,
+                                        color = Color(0xFF475569),
+                                        textAlign = TextAlign.Center,
+                                        delayMs = 40L,
+                                        isVisible = showContent
                                     )
-                            )
+                                }
+
+                                // Scroll indicator gradient at bottom
+                                if (canScrollDown) {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(60.dp)
+                                            .align(Alignment.BottomCenter)
+                                            .background(
+                                                Brush.verticalGradient(
+                                                    listOf(
+                                                        Color.Transparent,
+                                                        Color.White
+                                                    )
+                                                )
+                                            )
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -128,41 +188,56 @@ fun Screen5_GentleGuidance(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // CTA button
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp)
-                    .clip(RoundedCornerShape(32.dp))
-                    .background(
-                        Brush.horizontalGradient(
-                            listOf(
-                                Color(0xFF9470F4),
-                                Color(0xFF5E82F3),
-                                Color(0xFFD770C5)
+            // Animated CTA button with pulse effect
+            AnimatedVisibility(
+                visible = showButton,
+                enter = slideInVertically(
+                    initialOffsetY = { it },
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessLow
+                    )
+                ) + fadeIn(animationSpec = tween(600))
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                        .graphicsLayer {
+                            scaleX = buttonScale
+                            scaleY = buttonScale
+                        }
+                        .clip(RoundedCornerShape(32.dp))
+                        .background(
+                            Brush.horizontalGradient(
+                                listOf(
+                                    Color(0xFF9470F4),
+                                    Color(0xFF5E82F3),
+                                    Color(0xFFD770C5)
+                                )
                             )
                         )
-                    )
-            ) {
-                Button(
-                    onClick = onNewMood,
-                    modifier = Modifier.fillMaxSize(),
-                    shape = RoundedCornerShape(32.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Transparent
-                    ),
-                    elevation = ButtonDefaults.buttonElevation(
-                        defaultElevation = 0.dp,
-                        pressedElevation = 0.dp
-                    )
                 ) {
-                    Text(
-                        "New Reflection",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        letterSpacing = 0.5.sp
-                    )
+                    Button(
+                        onClick = onNewMood,
+                        modifier = Modifier.fillMaxSize(),
+                        shape = RoundedCornerShape(32.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent
+                        ),
+                        elevation = ButtonDefaults.buttonElevation(
+                            defaultElevation = 0.dp,
+                            pressedElevation = 0.dp
+                        )
+                    ) {
+                        Text(
+                            "New Reflection",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            letterSpacing = 0.5.sp
+                        )
+                    }
                 }
             }
         }
