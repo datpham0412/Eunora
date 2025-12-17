@@ -141,6 +141,39 @@ private fun MoodDetailContent(
                 )
             }
 
+            // Highlight section (if available)
+            entry.highlight?.let { highlight ->
+                CalmSurface(modifier = Modifier.fillMaxWidth()) {
+                    Column(
+                        modifier = Modifier.padding(32.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(bottom = 16.dp)
+                        ) {
+                            Text(text = "✨", fontSize = 24.sp)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Small Moment",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF1F2937)
+                            )
+                        }
+
+                        Text(
+                            text = "\"$highlight\"",
+                            fontSize = 18.sp,
+                            color = Color(0xFF92400E),
+                            fontWeight = FontWeight.Medium,
+                            textAlign = TextAlign.Center,
+                            lineHeight = 28.sp
+                        )
+                    }
+                }
+            }
+
             // Reflection section
             CalmSurface(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(32.dp)) {
