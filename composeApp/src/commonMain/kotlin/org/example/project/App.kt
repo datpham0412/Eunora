@@ -14,7 +14,8 @@ import repository.MoodRepository
 import viewmodel.*
 
 sealed class Screen {
-    object Welcome : Screen() // New Entry Point
+    object Splash : Screen() // Initial Screen
+    object Welcome : Screen()
     object Input : Screen()
     data class Result(val entryId: String) : Screen()
     object History : Screen()
@@ -52,7 +53,7 @@ fun App() {
     val uiState by moodViewModel.state.collectAsState()
 
     // Navigation state
-    var currentScreen by remember { mutableStateOf<Screen>(Screen.Welcome) } // Start at Welcome
+    var currentScreen by remember { mutableStateOf<Screen>(Screen.Splash) }
     var historyViewModel: MoodHistoryViewModel? by remember { mutableStateOf(null) }
     var detailViewModel: MoodDetailViewModel? by remember { mutableStateOf(null) }
 
@@ -68,6 +69,14 @@ fun App() {
             color = MaterialTheme.colorScheme.background
         ) {
             when (val screen = currentScreen) {
+                is Screen.Splash -> {
+                    SplashScreen(
+                        onSplashFinished = {
+                            currentScreen = Screen.Welcome
+                        }
+                    )
+                }
+
                 is Screen.Welcome -> {
                     WelcomeScreen(
                         state = welcomeState,
