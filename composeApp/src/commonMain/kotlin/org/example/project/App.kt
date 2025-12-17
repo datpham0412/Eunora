@@ -98,6 +98,7 @@ fun App() {
                         isLoading = uiState.isLoading,
                         error = uiState.error,
                         onInputChange = { moodViewModel.onInputChange(it) },
+                        onMoodSelect = { text, prompt -> moodViewModel.onMoodSelect(text, prompt) },
                         onAnalyze = { moodViewModel.analyzeMood() },
                         onClearError = { moodViewModel.clearError() },
                         onHistoryClick = {

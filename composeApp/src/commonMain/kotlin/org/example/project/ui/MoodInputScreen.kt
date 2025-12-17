@@ -6,6 +6,8 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -28,6 +30,7 @@ fun MoodInputScreen(
     isLoading: Boolean,
     error: String?,
     onInputChange: (String) -> Unit,
+    onMoodSelect: (String, String) -> Unit, // New callback for preset selection
     onAnalyze: () -> Unit,
     onClearError: () -> Unit,
     onHistoryClick: () -> Unit = {},
@@ -162,24 +165,30 @@ fun MoodInputScreen(
                 // Custom Mood Selector Row
                 val moods = remember {
                     listOf(
-                        MoodOption("😊", "Happy", "I'm feeling happy and energetic today!"),
-                        MoodOption("😌", "Calm", "I feel calm and at peace right now"),
-                        MoodOption("😐", "Neutral", "I feel okay, just neutral about everything"),
-                        MoodOption("😓", "Sad", "I feel sad and a bit down"),
-                        MoodOption("😠", "Angry", "I feel frustrated and irritated")
+                        MoodOption("🤩", "Excited", "I'm feeling excited and amazed!", "positivity: 76 percent\nenergy: 76 percent"),
+                        MoodOption("😊", "Happy", "I'm feeling happy and energetic today!", "positivity: 70 percent\nenergy: 70 percent\nstress: 40 percent"),
+                        MoodOption("😌", "Calm", "I feel calm and at peace right now", "positivity: 61 percent\nstress: 39 percent"),
+                        MoodOption("😐", "Neutral", "I feel okay, just neutral about everything", "positivity: 50 percent\nenergy: 50 percent\nstress: 50 percent"),
+                        MoodOption("😢", "Sad", "I feel sad and a bit down", "positivity: 39 percent\nenergy: 49 percent"),
+                        MoodOption("😓", "Stressed", "I'm feeling stressed and under pressure", "stress: 100 percent\nenergy: 35 percent"),
+                        MoodOption("😰", "Anxious", "I'm feeling anxious and uneasy", "stress: 70 percent\npositivity: 30 percent"),
+                        MoodOption("😠", "Angry", "I feel frustrated and irritated", "stress: 70 percent\nenergy: 80 percent\npositivity: 20 percent"),
+                        MoodOption("😵", "Overwhelmed", "I'm feeling completely overwhelmed", "stress: 75 percent\npositivity: 20 percent"),
+                        MoodOption("😞", "Depressed", "I feel hopeless and very low", "positivity: 10 percent\nenergy: 10 percent")
                     )
                 }
 
-                Row(
+                LazyRow(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(horizontal = 4.dp)
                 ) {
-                    moods.forEach { mood ->
+                    items(moods) { mood ->
                         MoodItemButton(
                             emoji = mood.emoji,
                             label = mood.label,
                             isSelected = userInput == mood.textValue,
-                            onClick = { onInputChange(mood.textValue) }
+                            onClick = { onMoodSelect(mood.textValue, mood.technicalPrompt) }
                         )
                     }
                 }
@@ -242,7 +251,7 @@ fun MoodInputScreen(
     }
 }
 
-data class MoodOption(val emoji: String, val label: String, val textValue: String)
+data class MoodOption(val emoji: String, val label: String, val textValue: String, val technicalPrompt: String)
 
 @Composable
 fun MoodItemButton(

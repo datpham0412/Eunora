@@ -30,21 +30,31 @@ class MoodViewModel(
     private val _state = MutableStateFlow(MoodUIState())
     val state: StateFlow<MoodUIState> = _state.asStateFlow()
     fun onInputChange(input: String) {
-        _state.update { it.copy(userInput = input) }
+        // Clearing technical prompt on manual input change to respect user's custom text
+        _state.update { it.copy(userInput = input, technicalPrompt = null) }
     }
+
+    fun onMoodSelect(text: String, prompt: String) {
+        _state.update { it.copy(userInput = text, technicalPrompt = prompt) }
+    }
+
     fun analyzeMood() {
-        val input = _state.value.userInput.trim()
+        val uiState = _state.value
+        val input = uiState.userInput.trim()
 
         if (input.isEmpty()) {
             _state.update { it.copy(error = "Please enter your mood") }
             return
         }
 
+        // Use technical prompt if available (from quick mood selection), otherwise use user input
+        val promptToSend = uiState.technicalPrompt ?: input
+
         scope.launch {
             try {
                 _state.update { it.copy(isLoading = true, error = null) }
 
-                val moodEntry = repository.analyzeMood(input)
+                val moodEntry = repository.analyzeMood(promptToSend)
 
                 _state.update {
                     it.copy(

@@ -65,24 +65,43 @@ fun classifyMood(emotion: MoodEmotionScore): NormalizedMood {
     val s = emotion.stress
 
     return when {
-        // Critical negative states first
-        s > 0.75f && p < 0.5f -> NormalizedMood.OVERWHELMED
-        p < 0.3f && e < 0.3f -> NormalizedMood.DEPRESSED
+        // 1. Extreme Stress (Stressed)
+        // Absolute Range: Stress > 90%
+        s >= 0.8f -> NormalizedMood.STRESSED
 
-        // High-intensity negative states
-        s > 0.6f && e > 0.6f && p < 0.4f -> NormalizedMood.ANGRY
-        s > 0.6f && p < 0.5f -> NormalizedMood.ANXIOUS
+        // 2. Excited (Very High Positive, High Energy, Low Stress)
+        // Range: P > 75%, E > 75%, S < 50%
+        p >= 0.75f && e >= 0.75f && s < 0.5f -> NormalizedMood.EXCITED
 
-        // High-intensity positive states
-        p > 0.75f && e > 0.75f -> NormalizedMood.EXCITED
-        p > 0.6f && e > 0.6f && s < 0.5f -> NormalizedMood.HAPPY_ENERGETIC
-        p > 0.6f && s < 0.4f -> NormalizedMood.CALM_POSITIVE
+        // 3. Depressed (Very Low Positive, Low Energy)
+        // Range: P < 35%, E < 35%, S < 60% (To avoid capturing Overwhelmed)
+        p <= 0.35f && e <= 0.35f && s < 0.6f -> NormalizedMood.DEPRESSED
 
-        // Moderate negative states
-        s > 0.6f -> NormalizedMood.STRESSED
-        p < 0.4f && e < 0.5f -> NormalizedMood.SAD
+        // 4. Angry (High Stress, High Energy, Negative)
+        // Range: S > 65%, E > 60%, P < 50%
+        s >= 0.65f && e >= 0.6f && p <= 0.5f -> NormalizedMood.ANGRY
 
-        // Default balanced state
+        // 5. Overwhelmed (High Stress, Low Positivity) - Catching cases without high energy
+        // Range: S > 75%, P < 45%
+        s >= 0.75f && p <= 0.45f -> NormalizedMood.OVERWHELMED
+
+        // 6. Anxious (Moderate-High Stress, Negative)
+        // Range: S > 60%, P < 50%
+        s >= 0.6f && p <= 0.5f -> NormalizedMood.ANXIOUS
+
+        // 7. Happy / Energetic (High Positive, High Energy) - Below Excited Threshold
+        // Range: P > 60%, E > 60%
+        p >= 0.6f && e >= 0.6f -> NormalizedMood.HAPPY_ENERGETIC
+
+        // 8. Calm (Positive, Low Stress)
+        // Range: P > 55%, S < 45%
+        p >= 0.55f && s <= 0.45f -> NormalizedMood.CALM_POSITIVE
+
+        // 9. Sad (Low Positive, Low-Mod Energy) - Above Depressed Threshold
+        // Range: P < 45%, E < 55%
+        p <= 0.45f && e <= 0.55f -> NormalizedMood.SAD
+
+        // 10. Neutral (Everything else)
         else -> NormalizedMood.NEUTRAL
     }
 }
