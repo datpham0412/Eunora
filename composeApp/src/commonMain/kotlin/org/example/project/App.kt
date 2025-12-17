@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import kotlinx.coroutines.launch
 import ai.AIService
 import com.example.shared.ApiConfig
 import com.example.shared.db.MoodDatabase
@@ -77,6 +78,7 @@ fun App() {
 
                 is Screen.Result -> {
                     uiState.currentMoodEntry?.let { entry ->
+                        val coroutineScope = rememberCoroutineScope()
                         MoodResultScreen(
                             moodEntry = entry,
                             onNewMood = {
@@ -86,6 +88,11 @@ fun App() {
                             onHistoryClick = {
                                 historyViewModel = MoodHistoryViewModel(repository)
                                 currentScreen = Screen.History
+                            },
+                            onHighlightCapture = { entryId, highlight ->
+                                coroutineScope.launch {
+                                    repository.updateHighlight(entryId, highlight)
+                                }
                             }
                         )
                     }
