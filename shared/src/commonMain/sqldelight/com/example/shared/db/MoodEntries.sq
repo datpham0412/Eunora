@@ -4,7 +4,8 @@ CREATE TABLE mood_entries (
   normalized_mood TEXT NOT NULL,
   ai_result_json TEXT NOT NULL,
   art_metadata_json TEXT NOT NULL,
-  timestamp INTEGER NOT NULL
+  timestamp INTEGER NOT NULL,
+  highlight TEXT
 );
 
 CREATE INDEX idx_timestamp ON mood_entries(timestamp DESC);
@@ -16,8 +17,8 @@ selectById:
 SELECT * FROM mood_entries WHERE id = ?;
 
 insert:
-INSERT OR REPLACE INTO mood_entries (id, raw_mood_text, normalized_mood, ai_result_json, art_metadata_json, timestamp)
-VALUES (?, ?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO mood_entries (id, raw_mood_text, normalized_mood, ai_result_json, art_metadata_json, timestamp, highlight)
+VALUES (?, ?, ?, ?, ?, ?, ?);
 
 deleteById:
 DELETE FROM mood_entries WHERE id = ?;

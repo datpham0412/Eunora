@@ -56,7 +56,8 @@ class MoodRepository(
             normalized_mood = entry.normalizedMood.name,
             ai_result_json = json.encodeToString(entry.ai),
             art_metadata_json = json.encodeToString(entry.art),
-            timestamp = entry.timestamp
+            timestamp = entry.timestamp,
+            highlight = entry.highlight
         )
     }
 
@@ -89,6 +90,13 @@ class MoodRepository(
             .executeAsOne()
     }
 
+    suspend fun updateHighlight(entryId: String, highlight: String?) {
+        val entry = getMoodEntryById(entryId)
+        if (entry != null) {
+            saveMoodEntry(entry.copy(highlight = highlight))
+        }
+    }
+
     private fun Mood_entries.toMoodEntry(): MoodEntry {
         return MoodEntry(
             id = id,
@@ -96,7 +104,8 @@ class MoodRepository(
             normalizedMood = NormalizedMood.valueOf(normalized_mood),
             ai = json.decodeFromString<MoodAIResult>(ai_result_json),
             art = json.decodeFromString<MoodArtMetadata>(art_metadata_json),
-            timestamp = timestamp
+            timestamp = timestamp,
+            highlight = highlight
         )
     }
 

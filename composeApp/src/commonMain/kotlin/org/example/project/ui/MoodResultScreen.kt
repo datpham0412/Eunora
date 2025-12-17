@@ -35,7 +35,8 @@ sealed class PageType {
 fun MoodResultScreen(
     moodEntry: MoodEntry,
     onNewMood: () -> Unit,
-    onHistoryClick: () -> Unit = {}
+    onHistoryClick: () -> Unit = {},
+    onHighlightCapture: (String, String?) -> Unit = { _, _ -> }
 ) {
     val backgroundColor = extractMoodBackgroundColor(moodEntry.normalizedMood)
     val moodGroup = moodEntry.normalizedMood.toMoodGroup()
@@ -116,7 +117,8 @@ fun MoodResultScreen(
                     HighlightMarker(
                         mood = moodEntry.normalizedMood,
                         onComplete = { input ->
-                            // Optional: Save input somewhere if needed
+                            // Save highlight to database
+                            onHighlightCapture(moodEntry.id, input)
                             coroutineScope.launch {
                                 pagerState.animateScrollToPage(page + 1)
                             }
@@ -131,7 +133,7 @@ fun MoodResultScreen(
             currentPage = pagerState.currentPage,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 24.dp)
+                .padding(bottom = 64.dp)
         )
     }
 }
@@ -180,13 +182,13 @@ private fun buildPageFlow(moodGroup: MoodGroup): List<PageType> {
 
 /**
  * Check if page is a marker (disable swipe for markers)
- * Note: HighlightMarker allows swipe so user can skip without typing
+ * Note: HighlightMarker and PermissionMarker allow swipe
  */
 private fun isMarkerPage(pageType: PageType): Boolean {
     return when (pageType) {
         is PageType.CoreScreen -> false
-        PageType.PauseMarker,
-        PageType.PermissionMarker -> true
+        PageType.PauseMarker -> true
+        PageType.PermissionMarker -> false  // Allow swipe for PERMISSION MARKER
         PageType.HighlightMarker -> false  // Allow swipe for HIGHLIGHT MARKER
     }
 }
