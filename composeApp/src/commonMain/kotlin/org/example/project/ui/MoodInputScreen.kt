@@ -68,169 +68,176 @@ fun MoodInputScreen(
             ) {
                 Spacer(modifier = Modifier.height(32.dp))
 
-
-            // Title
-            Text(
-                text = "How are you feeling?",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = PrimaryText
-                ),
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Subtitle
-            Text(
-                text = "Share your thoughts freely.\nThere's no right or wrong.",
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    fontSize = 17.sp,
-                    lineHeight = 24.sp,
-                    color = SecondaryText
-                ),
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // Input Card
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(220.dp),
-                shape = RoundedCornerShape(24.dp),
-                color = CardColor,
-                shadowElevation = 0.dp
-            ) {
-                Box(modifier = Modifier.padding(24.dp)) {
-                     BasicTextField(
-                        value = userInput,
-                        onValueChange = onInputChange,
-                        modifier = Modifier.fillMaxSize(),
-                        textStyle = TextStyle(
-                            fontSize = 18.sp,
-                            lineHeight = 28.sp,
-                            fontWeight = FontWeight.Normal,
-                            color = Color(0xFF374151), // Dark Gray for input
-                        ),
-                        enabled = !isLoading,
-                        decorationBox = { innerTextField ->
-                            if (userInput.isEmpty()) {
-                                Text(
-                                    text = "Write about your mood,\nthoughts, or feelings...",
-                                    style = TextStyle(
-                                        fontSize = 18.sp,
-                                        lineHeight = 28.sp,
-                                        fontWeight = FontWeight.Normal,
-                                        color = Color(0xFF9CA3AF) // Placeholder Gray
-                                    )
-                                )
-                            }
-                            innerTextField()
-                        }
-                    )
-                }
-            }
-            
-            if (error != null) {
-                Spacer(modifier = Modifier.height(16.dp))
+                // Title
                 Text(
-                    text = error,
-                    color = Color.Red.copy(alpha = 0.8f),
-                    style = MaterialTheme.typography.bodyMedium,
+                    text = "How are you feeling?",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = PrimaryText
+                    ),
                     textAlign = TextAlign.Center
                 )
-            }
 
-            Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-            // Quick Mood Label
-            Text(
-                text = "Quick mood (optional):",
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = PrimaryText
-                ),
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Start
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Custom Mood Selector Row
-            val moods = remember {
-                listOf(
-                    MoodOption("😊", "Happy", "I'm feeling happy and energetic today!"),
-                    MoodOption("😌", "Calm", "I feel calm and at peace right now"),
-                    MoodOption("😐", "Neutral", "I feel okay, just neutral about everything"),
-                    MoodOption("😓", "Sad", "I feel sad and a bit down"),
-                    MoodOption("😠", "Angry", "I feel frustrated and irritated")
-                )
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                moods.forEach { mood ->
-                    MoodItemButton(
-                        emoji = mood.emoji,
-                        label = mood.label,
-                        isSelected = userInput == mood.textValue,
-                        onClick = { onInputChange(mood.textValue) }
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(40.dp))
-
-            // Continue Button
-            Button(
-                onClick = onAnalyze,
-                enabled = !isLoading && userInput.isNotBlank(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-                    .shadow(
-                        elevation = if (!isLoading && userInput.isNotBlank()) 4.dp else 0.dp,
-                        shape = RoundedCornerShape(28.dp),
-                        spotColor = ButtonColor.copy(alpha = 0.5f)
+                // Subtitle
+                Text(
+                    text = "Share your thoughts freely.\nThere's no right or wrong.",
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontSize = 17.sp,
+                        lineHeight = 24.sp,
+                        color = SecondaryText
                     ),
-                shape = RoundedCornerShape(28.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = ButtonColor,
-                    disabledContainerColor = ButtonColor.copy(alpha = 0.5f),
-                    contentColor = Color.White,
-                    disabledContentColor = Color.White.copy(alpha = 0.7f)
-                ),
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 0.dp,
-                    pressedElevation = 0.dp
+                    textAlign = TextAlign.Center
                 )
-            ) {
-                if (isLoading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
-                        color = Color.White,
-                        strokeWidth = 2.5.dp
-                    )
-                } else {
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                // Input Card
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(220.dp),
+                    shape = RoundedCornerShape(24.dp),
+                    color = CardColor,
+                    shadowElevation = 0.dp
+                ) {
+                    Box(modifier = Modifier.padding(24.dp)) {
+                         BasicTextField(
+                            value = userInput,
+                            onValueChange = onInputChange,
+                            modifier = Modifier.fillMaxSize(),
+                            textStyle = TextStyle(
+                                fontSize = 18.sp,
+                                lineHeight = 28.sp,
+                                fontWeight = FontWeight.Normal,
+                                color = Color(0xFF374151), // Dark Gray for input
+                            ),
+                            enabled = !isLoading,
+                            decorationBox = { innerTextField ->
+                                if (userInput.isEmpty()) {
+                                    Text(
+                                        text = "Write about your mood,\nthoughts, or feelings...",
+                                        style = TextStyle(
+                                            fontSize = 18.sp,
+                                            lineHeight = 28.sp,
+                                            fontWeight = FontWeight.Normal,
+                                            color = Color(0xFF9CA3AF) // Placeholder Gray
+                                        )
+                                    )
+                                }
+                                innerTextField()
+                            }
+                        )
+                    }
+                }
+                
+                if (error != null) {
+                    Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = "Continue",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
+                        text = error,
+                        color = Color.Red.copy(alpha = 0.8f),
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center
                     )
                 }
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                // Quick Mood Label
+                Text(
+                    text = "Quick mood (optional):",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = PrimaryText
+                    ),
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Start
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Custom Mood Selector Row
+                val moods = remember {
+                    listOf(
+                        MoodOption("😊", "Happy", "I'm feeling happy and energetic today!"),
+                        MoodOption("😌", "Calm", "I feel calm and at peace right now"),
+                        MoodOption("😐", "Neutral", "I feel okay, just neutral about everything"),
+                        MoodOption("😓", "Sad", "I feel sad and a bit down"),
+                        MoodOption("😠", "Angry", "I feel frustrated and irritated")
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    moods.forEach { mood ->
+                        MoodItemButton(
+                            emoji = mood.emoji,
+                            label = mood.label,
+                            isSelected = userInput == mood.textValue,
+                            onClick = { onInputChange(mood.textValue) }
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(40.dp))
+
+                // Continue Button
+                Button(
+                    onClick = onAnalyze,
+                    enabled = !isLoading && userInput.isNotBlank(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .shadow(
+                            elevation = if (!isLoading && userInput.isNotBlank()) 4.dp else 0.dp,
+                            shape = RoundedCornerShape(28.dp),
+                            spotColor = ButtonColor.copy(alpha = 0.5f)
+                        ),
+                    shape = RoundedCornerShape(28.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = ButtonColor,
+                        disabledContainerColor = ButtonColor.copy(alpha = 0.5f),
+                        contentColor = Color.White,
+                        disabledContentColor = Color.White.copy(alpha = 0.7f)
+                    ),
+                    elevation = ButtonDefaults.buttonElevation(
+                        defaultElevation = 0.dp,
+                        pressedElevation = 0.dp
+                    )
+                ) {
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            color = Color.White,
+                            strokeWidth = 2.5.dp
+                        )
+                    } else {
+                        Text(
+                            text = "Continue",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+                
+                Spacer(modifier = Modifier.height(32.dp))
             }
-            
-            Spacer(modifier = Modifier.height(32.dp))
-        }
         
-        // Swipe Detector Surface (Invisible, left edge)
-        EdgeSwipeBackHandler(onBack = onBack)
+            // Swipe Detector Surface (Invisible, left edge)
+            EdgeSwipeBackHandler(onBack = onBack)
+
+            // Native-style Back Button (Top Left)
+            AdaptiveBackButton(
+                onClick = onBack,
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(top = 16.dp + paddingValues.calculateTopPadding(), start = 16.dp) 
+            )
         }
     }
 }

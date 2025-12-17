@@ -55,6 +55,12 @@ fun MoodHistoryScreen(
                         fontWeight = FontWeight.Bold
                     )
                 },
+                navigationIcon = {
+                     AdaptiveBackButton(
+                         onClick = onBackClick,
+                         modifier = Modifier.padding(start = 4.dp)
+                     )
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent,
                     titleContentColor = Color(0xFF1F2937)

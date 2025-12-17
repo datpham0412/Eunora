@@ -79,6 +79,15 @@ fun MoodDetailScreen(
 
         // Swipe to Back (iOS style) - Top Z-Index
         EdgeSwipeBackHandler(onBack = onBackClick)
+
+        // Back Button
+        AdaptiveBackButton(
+            onClick = onBackClick,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .statusBarsPadding() // Ensure it clears status bar
+                .padding(16.dp)
+        )
     }
 
     DisposableEffect(Unit) {
