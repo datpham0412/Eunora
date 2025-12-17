@@ -198,6 +198,34 @@ private fun MoodHistoryCard(
                 lineHeight = 22.sp
             )
 
+            // Highlight badge (if available)
+            entry.highlight?.let { highlight ->
+                Spacer(modifier = Modifier.height(12.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .background(
+                            color = Color(0xFFFFF8E1),
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                ) {
+                    Text(
+                        text = "✨",
+                        fontSize = 14.sp
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = highlight,
+                        fontSize = 14.sp,
+                        color = Color(0xFF92400E),
+                        fontWeight = FontWeight.Medium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
 
             // Mini spectrum visualization
