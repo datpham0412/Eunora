@@ -211,9 +211,8 @@ fun Screen5_GentleGuidance(
                         .background(
                             Brush.horizontalGradient(
                                 listOf(
-                                    Color(0xFF9470F4),
-                                    Color(0xFF5E82F3),
-                                    Color(0xFFD770C5)
+                                    getMoodColor(mood),
+                                    getMoodColor(mood).copy(alpha = 0.8f)
                                 )
                             )
                         )

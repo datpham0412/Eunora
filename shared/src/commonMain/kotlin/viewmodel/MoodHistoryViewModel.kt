@@ -12,11 +12,28 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import model.MoodEntry
+import model.NormalizedMood
 import repository.MoodRepository
 import util.currentTimeMillis
 
+enum class MoodFilter(val displayName: String) {
+    ALL("All"),
+    HAPPY("Happy"),
+    CALM("Calm"),
+    SAD("Sad"),
+    STRESSED("Stressed") // 4th Group
+}
+
 data class MoodHistoryUIState(
-    val groupedEntries: Map<String, List<MoodEntry>> = emptyMap(),
+    val entries: List<MoodEntry> = emptyList(), // All raw entries
+    val groupedFilteredEntries: Map<String, List<MoodEntry>> = emptyMap(),
+    val selectedFilter: MoodFilter = MoodFilter.ALL,
+    
+    // Stats
+    val totalEntries: Int = 0,
+    val averageMood: String = "-",
+    val mostCommonMood: String = "-",
+    
     val isLoading: Boolean = true,
     val error: String? = null
 )
@@ -56,15 +73,31 @@ class MoodHistoryViewModel(
                     }
                 }
                 .collect { entries ->
-                    val grouped = groupEntriesByDate(entries)
-                    _state.update {
-                        it.copy(
-                            groupedEntries = grouped,
+                    _state.update { currentState ->
+                        val stats = calculateStats(entries)
+                        val filteredGrouped = filterAndGroupEntries(entries, currentState.selectedFilter)
+                        
+                        currentState.copy(
+                            entries = entries,
+                            groupedFilteredEntries = filteredGrouped,
+                            totalEntries = stats.total,
+                            averageMood = stats.avgStr,
+                            mostCommonMood = stats.common,
                             isLoading = false,
                             error = null
                         )
                     }
                 }
+        }
+    }
+    
+    fun setFilter(filter: MoodFilter) {
+        _state.update { currentState ->
+            val filteredGrouped = filterAndGroupEntries(currentState.entries, filter)
+            currentState.copy(
+                selectedFilter = filter,
+                groupedFilteredEntries = filteredGrouped
+            )
         }
     }
 
@@ -84,37 +117,91 @@ class MoodHistoryViewModel(
         _state.update { it.copy(error = null) }
     }
 
+    private fun filterAndGroupEntries(entries: List<MoodEntry>, filter: MoodFilter): Map<String, List<MoodEntry>> {
+        val filtered = if (filter == MoodFilter.ALL) {
+            entries
+        } else {
+            entries.filter { entry ->
+                getFilterForMood(entry.normalizedMood) == filter
+            }
+        }
+        return groupEntriesByDate(filtered)
+    }
+    
+    private fun getFilterForMood(mood: NormalizedMood): MoodFilter {
+        return when (mood) {
+            NormalizedMood.HAPPY_ENERGETIC, NormalizedMood.EXCITED -> MoodFilter.HAPPY
+            NormalizedMood.CALM_POSITIVE, NormalizedMood.NEUTRAL -> MoodFilter.CALM
+            NormalizedMood.SAD, NormalizedMood.DEPRESSED -> MoodFilter.SAD
+            // Stressed, Anxious, Angry, Overwhelmed
+            NormalizedMood.STRESSED, NormalizedMood.ANXIOUS, NormalizedMood.ANGRY, NormalizedMood.OVERWHELMED -> MoodFilter.STRESSED
+        }
+    }
+
+    data class CheckInStats(val total: Int, val avgStr: String, val common: String)
+
+    private fun calculateStats(entries: List<MoodEntry>): CheckInStats {
+        if (entries.isEmpty()) return CheckInStats(0, "-", "-")
+        
+        val total = entries.size
+        
+        // Avg Energy Calculation (matching WelcomeViewModel)
+        val avgEnergyVal = entries.map { it.ai.emotion.energy }.average()
+        val avgEnergyStr = if (avgEnergyVal.isNaN()) "-" else {
+            val rounded = kotlin.math.round(avgEnergyVal * 10 * 10) / 10.0
+            "$rounded"
+        }
+        
+        // Find most common emoji
+        // We need to map each entry to an emoji first
+        val common = entries
+            .groupingBy { getEmojiForMood(it.normalizedMood) }
+            .eachCount()
+            .maxByOrNull { it.value }
+            ?.key ?: "-"
+        
+        return CheckInStats(total, avgEnergyStr, common) 
+    }
+    
+    private fun getEmojiForMood(mood: NormalizedMood): String {
+        return when (mood) {
+            NormalizedMood.CALM_POSITIVE -> "😌"
+            NormalizedMood.HAPPY_ENERGETIC -> "😊"
+            NormalizedMood.EXCITED -> "🤩"
+            NormalizedMood.NEUTRAL -> "😐"
+            NormalizedMood.STRESSED -> "😫"
+            NormalizedMood.ANXIOUS -> "😰"
+            NormalizedMood.SAD -> "😓"
+            NormalizedMood.DEPRESSED -> "😞"
+            NormalizedMood.ANGRY -> "😠"
+            NormalizedMood.OVERWHELMED -> "😵"
+        }
+    }
+
     private fun groupEntriesByDate(entries: List<MoodEntry>): Map<String, List<MoodEntry>> {
         val now = currentTimeMillis()
         val oneDayMillis = 24 * 60 * 60 * 1000L
-
-        // Calculate start of today (midnight) - rough approximation
         val todayStart = now - (now % oneDayMillis)
         val yesterdayStart = todayStart - oneDayMillis
-        val yesterdayEnd = todayStart - 1
+        
+        // Sort by timestamp desc
+        val sorted = entries.sortedByDescending { it.timestamp }
 
-        return entries.groupBy { entry ->
+        return sorted.groupBy { entry ->
             when {
                 entry.timestamp >= todayStart -> "Today"
-                entry.timestamp in yesterdayStart..yesterdayEnd -> "Yesterday"
+                entry.timestamp >= yesterdayStart -> "Yesterday"
                 else -> formatDateFromTimestamp(entry.timestamp)
             }
         }
     }
 
     private fun formatDateFromTimestamp(timestamp: Long): String {
-        // Simple date formatting without kotlinx.datetime
-        // This is a basic approximation - format as "MMM DD"
         val daysSinceEpoch = (timestamp / (24 * 60 * 60 * 1000L)).toInt()
-
-        // Approximate year, month, day calculation
         val year = 1970 + (daysSinceEpoch / 365)
         val dayOfYear = daysSinceEpoch % 365
-
         val monthDays = listOf(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
-        val monthNames = listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                               "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
-
+        val monthNames = listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
         var remainingDays = dayOfYear
         var month = 0
         for (i in monthDays.indices) {
@@ -124,7 +211,6 @@ class MoodHistoryViewModel(
             }
             remainingDays -= monthDays[i]
         }
-
         val day = remainingDays + 1
         return "${monthNames.getOrNull(month) ?: "Jan"} $day"
     }
@@ -133,3 +219,4 @@ class MoodHistoryViewModel(
         scope.cancel()
     }
 }
+

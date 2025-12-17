@@ -236,7 +236,7 @@ fun MoodInputScreen(
                 onClick = onBack,
                 modifier = Modifier
                     .align(Alignment.TopStart)
-                    .padding(top = 16.dp + paddingValues.calculateTopPadding(), start = 16.dp) 
+                    .padding(top = 16.dp + paddingValues.calculateTopPadding(), start = 8.dp) 
             )
         }
     }

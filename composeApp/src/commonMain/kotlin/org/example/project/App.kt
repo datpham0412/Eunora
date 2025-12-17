@@ -127,6 +127,9 @@ fun App() {
                                 coroutineScope.launch {
                                     repository.updateHighlight(entryId, highlight)
                                 }
+                            },
+                            onBack = {
+                                currentScreen = Screen.Input
                             }
                         )
                     }

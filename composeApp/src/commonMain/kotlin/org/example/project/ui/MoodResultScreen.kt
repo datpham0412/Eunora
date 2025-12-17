@@ -36,8 +36,12 @@ fun MoodResultScreen(
     moodEntry: MoodEntry,
     onNewMood: () -> Unit,
     onHistoryClick: () -> Unit = {},
-    onHighlightCapture: (String, String?) -> Unit = { _, _ -> }
+    onHighlightCapture: (String, String?) -> Unit = { _, _ -> },
+    onBack: () -> Unit // Callback for system back button
 ) {
+    // Handle System Back Button
+    BackHandler(onBack = onBack)
+
     val backgroundColor = extractMoodBackgroundColor(moodEntry.normalizedMood)
     val moodGroup = moodEntry.normalizedMood.toMoodGroup()
 
