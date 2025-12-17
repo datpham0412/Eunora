@@ -14,6 +14,7 @@ import repository.MoodRepository
 import viewmodel.*
 
 sealed class Screen {
+    object Welcome : Screen() // New Entry Point
     object Input : Screen()
     data class Result(val entryId: String) : Screen()
     object History : Screen()
@@ -42,10 +43,16 @@ fun App() {
         MoodViewModel(repository)
     }
 
+    // Initialize Welcome ViewModel
+    val welcomeViewModel = remember {
+        WelcomeViewModel(repository)
+    }
+    val welcomeState by welcomeViewModel.state.collectAsState()
+
     val uiState by moodViewModel.state.collectAsState()
 
     // Navigation state
-    var currentScreen by remember { mutableStateOf<Screen>(Screen.Input) }
+    var currentScreen by remember { mutableStateOf<Screen>(Screen.Welcome) } // Start at Welcome
     var historyViewModel: MoodHistoryViewModel? by remember { mutableStateOf(null) }
     var detailViewModel: MoodDetailViewModel? by remember { mutableStateOf(null) }
 
@@ -61,7 +68,22 @@ fun App() {
             color = MaterialTheme.colorScheme.background
         ) {
             when (val screen = currentScreen) {
+                is Screen.Welcome -> {
+                    WelcomeScreen(
+                        state = welcomeState,
+                        onStartCheckIn = { currentScreen = Screen.Input },
+                        onViewHistory = {
+                            historyViewModel = MoodHistoryViewModel(repository)
+                            currentScreen = Screen.History
+                        }
+                    )
+                }
+
                 is Screen.Input -> {
+                    
+                    // Basic BackHandler equivalent for Android (if we had the header, but since we modify commonMain UI)
+                    // We rely on the UI Back button added in the screen.
+                    
                     MoodInputScreen(
                         userInput = uiState.userInput,
                         isLoading = uiState.isLoading,
@@ -72,6 +94,9 @@ fun App() {
                         onHistoryClick = {
                             historyViewModel = MoodHistoryViewModel(repository)
                             currentScreen = Screen.History
+                        },
+                        onBack = {
+                            currentScreen = Screen.Welcome
                         }
                     )
                 }
@@ -83,7 +108,7 @@ fun App() {
                             moodEntry = entry,
                             onNewMood = {
                                 moodViewModel.clearMood()
-                                currentScreen = Screen.Input
+                                currentScreen = Screen.Welcome // Return to Welcome after result
                             },
                             onHistoryClick = {
                                 historyViewModel = MoodHistoryViewModel(repository)
@@ -108,7 +133,7 @@ fun App() {
                             },
                             onBackClick = {
                                 historyViewModel = null
-                                currentScreen = Screen.Input
+                                currentScreen = Screen.Welcome // Go back to Welcome from History main
                             }
                         )
                     }

@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
@@ -14,7 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
@@ -23,7 +22,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoodInputScreen(
     userInput: String,
@@ -32,118 +30,102 @@ fun MoodInputScreen(
     onInputChange: (String) -> Unit,
     onAnalyze: () -> Unit,
     onClearError: () -> Unit,
-    onHistoryClick: () -> Unit = {}
+    onHistoryClick: () -> Unit = {},
+    onBack: () -> Unit = {}
 ) {
     val focusManager = LocalFocusManager.current
 
-    val backgroundGradient = Brush.verticalGradient(
-        colors = listOf(
-            Color(0xFFCDB8F0),
-            Color(0xFFB8C8F5),
-            Color(0xFFE8C5E6),
-            Color(0xFFC8CDF3)
-        )
-    )
+    // Theme Colors based on Mockup
+    val BackgroundColor = Color(0xFFE2F4F2) // Pale Mint Green
+    val PrimaryText = Color(0xFF11423D) // Dark Deep Teal
+    val SecondaryText = Color(0xFF11423D).copy(alpha = 0.8f)
+    val ButtonColor = Color(0xFF3EA8A3) // Teal/Cyan Button
+    val CardColor = Color.White
+    val MoodItemColor = Color.White
 
-    val buttonGradient = Brush.horizontalGradient(
-        colors = listOf(
-            Color(0xFF9470F4),
-            Color(0xFF5E82F3),
-            Color(0xFFD770C5)
-        )
-    )
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(backgroundGradient)
-            .clickable(
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() }
+    Scaffold(
+        containerColor = BackgroundColor,
+        contentColor = PrimaryText
+    ) { paddingValues ->
+        // Handle System Back Press (Android)
+        BackHandler(enabled = true, onBack = onBack)
+        
+        // Handle Swipe Back (iOS style)
+        Box(modifier = Modifier.fillMaxSize()) {
+             // Main Content
+             Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) { focusManager.clearFocus() }
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                focusManager.clearFocus()
-            }
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 28.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
+                Spacer(modifier = Modifier.height(32.dp))
 
+
+            // Title
             Text(
                 text = "How are you feeling?",
                 style = MaterialTheme.typography.headlineMedium.copy(
-                    fontSize = 34.sp,
-                    lineHeight = 42.sp
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = PrimaryText
                 ),
-                fontWeight = FontWeight.Medium,
-                color = Color(0xFF1F2937),
-                letterSpacing = 0.2.sp,
                 textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // Subtitle
             Text(
-                text = "Let your thoughts flow freely",
-                style = MaterialTheme.typography.bodyMedium.copy(
+                text = "Share your thoughts freely.\nThere's no right or wrong.",
+                style = MaterialTheme.typography.bodyLarge.copy(
                     fontSize = 17.sp,
-                    lineHeight = 24.sp
+                    lineHeight = 24.sp,
+                    color = SecondaryText
                 ),
-                fontWeight = FontWeight.Normal,
-                color = Color(0xFF4A5568).copy(alpha = 0.85f),
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(56.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
+            // Input Card
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(min = 240.dp),
-                shape = RoundedCornerShape(32.dp),
-                color = Color.White,
-                tonalElevation = 0.dp,
-                shadowElevation = 3.dp
+                    .height(220.dp),
+                shape = RoundedCornerShape(24.dp),
+                color = CardColor,
+                shadowElevation = 0.dp
             ) {
-                Box(
-                    modifier = Modifier
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(
-                                    Color.White,
-                                    Color(0xFFFAF5FF)
-                                )
-                            )
-                        )
-                        .padding(28.dp)
-                ) {
-                    BasicTextField(
+                Box(modifier = Modifier.padding(24.dp)) {
+                     BasicTextField(
                         value = userInput,
                         onValueChange = onInputChange,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxSize(),
                         textStyle = TextStyle(
-                            fontSize = 17.sp,
+                            fontSize = 18.sp,
                             lineHeight = 28.sp,
                             fontWeight = FontWeight.Normal,
-                            color = Color(0xFF1F2937),
-                            letterSpacing = 0.3.sp
+                            color = Color(0xFF374151), // Dark Gray for input
                         ),
                         enabled = !isLoading,
                         decorationBox = { innerTextField ->
                             if (userInput.isEmpty()) {
                                 Text(
-                                    text = "I feel...",
-                                    style = MaterialTheme.typography.bodyLarge.copy(
-                                        fontSize = 17.sp,
+                                    text = "Write about your mood,\nthoughts, or feelings...",
+                                    style = TextStyle(
+                                        fontSize = 18.sp,
                                         lineHeight = 28.sp,
-                                        letterSpacing = 0.3.sp
-                                    ),
-                                    fontWeight = FontWeight.Light,
-                                    color = Color(0xFF4A5568).copy(alpha = 0.4f)
+                                        fontWeight = FontWeight.Normal,
+                                        color = Color(0xFF9CA3AF) // Placeholder Gray
+                                    )
                                 )
                             }
                             innerTextField()
@@ -151,174 +133,145 @@ fun MoodInputScreen(
                     )
                 }
             }
-
+            
             if (error != null) {
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = error,
+                    color = Color.Red.copy(alpha = 0.8f),
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center
+                )
+            }
 
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(24.dp),
-                    color = Color(0xFFFED7D7).copy(alpha = 0.6f),
-                    tonalElevation = 0.dp
-                ) {
-                    Row(
-                        modifier = Modifier.padding(20.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = error,
-                            style = MaterialTheme.typography.bodySmall.copy(
-                                fontSize = 14.sp,
-                                lineHeight = 20.sp
-                            ),
-                            fontWeight = FontWeight.Normal,
-                            color = Color(0xFF742A2A).copy(alpha = 0.8f),
-                            modifier = Modifier.weight(1f)
-                        )
-                        TextButton(onClick = onClearError) {
-                            Text(
-                                "Dismiss",
-                                style = MaterialTheme.typography.labelSmall,
-                                fontWeight = FontWeight.Medium,
-                                color = Color(0xFF742A2A).copy(alpha = 0.7f)
-                            )
-                        }
-                    }
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Quick Mood Label
+            Text(
+                text = "Quick mood (optional):",
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = PrimaryText
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Custom Mood Selector Row
+            val moods = remember {
+                listOf(
+                    MoodOption("😊", "Happy", "I'm feeling happy and energetic today!"),
+                    MoodOption("😌", "Calm", "I feel calm and at peace right now"),
+                    MoodOption("😐", "Neutral", "I feel okay, just neutral about everything"),
+                    MoodOption("😓", "Sad", "I feel sad and a bit down"),
+                    MoodOption("😠", "Angry", "I feel frustrated and irritated")
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                moods.forEach { mood ->
+                    MoodItemButton(
+                        emoji = mood.emoji,
+                        label = mood.label,
+                        isSelected = userInput == mood.textValue,
+                        onClick = { onInputChange(mood.textValue) }
+                    )
                 }
             }
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            Box(
+            // Continue Button
+            Button(
+                onClick = onAnalyze,
+                enabled = !isLoading && userInput.isNotBlank(),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(60.dp)
-                    .clip(RoundedCornerShape(30.dp))
-                    .background(
-                        if (!isLoading && userInput.isNotBlank()) {
-                            buttonGradient
-                        } else {
-                            Brush.horizontalGradient(
-                                listOf(
-                                    Color(0xFFCDC8F0).copy(alpha = 0.7f),
-                                    Color(0xFFC8CFF5).copy(alpha = 0.7f)
-                                )
-                            )
-                        }
-                    )
-            ) {
-                Button(
-                    onClick = onAnalyze,
-                    modifier = Modifier.fillMaxSize(),
-                    enabled = !isLoading && userInput.isNotBlank(),
-                    shape = RoundedCornerShape(30.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent
+                    .height(56.dp)
+                    .shadow(
+                        elevation = if (!isLoading && userInput.isNotBlank()) 4.dp else 0.dp,
+                        shape = RoundedCornerShape(28.dp),
+                        spotColor = ButtonColor.copy(alpha = 0.5f)
                     ),
-                    elevation = ButtonDefaults.buttonElevation(
-                        defaultElevation = 0.dp,
-                        pressedElevation = 0.dp,
-                        disabledElevation = 0.dp
-                    )
-                ) {
-                    if (isLoading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(22.dp),
-                            color = Color.White,
-                            strokeWidth = 2.5.dp
-                        )
-                        Spacer(modifier = Modifier.width(14.dp))
-                        Text(
-                            "Understanding your mood...",
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                fontSize = 16.sp,
-                                letterSpacing = 0.3.sp
-                            ),
-                            fontWeight = FontWeight.Normal,
-                            color = Color.White
-                        )
-                    } else {
-                        Text(
-                            "Reflect",
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                fontSize = 17.sp,
-                                letterSpacing = 0.5.sp
-                            ),
-                            fontWeight = FontWeight.Medium,
-                            color = if (userInput.isNotBlank()) Color.White else Color(0xFF718096).copy(alpha = 0.5f)
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(48.dp))
-
-            // Emoji mood selector
-            val moods = remember {
-                listOf(
-                    "😊" to "I'm feeling happy and energetic today!",
-                    "😌" to "I feel calm and at peace right now",
-                    "😐" to "I feel okay, just neutral about everything",
-                    "😔" to "I feel sad and a bit down",
-                    "😠" to "I feel frustrated and irritated"
+                shape = RoundedCornerShape(28.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = ButtonColor,
+                    disabledContainerColor = ButtonColor.copy(alpha = 0.5f),
+                    contentColor = Color.White,
+                    disabledContentColor = Color.White.copy(alpha = 0.7f)
+                ),
+                elevation = ButtonDefaults.buttonElevation(
+                    defaultElevation = 0.dp,
+                    pressedElevation = 0.dp
                 )
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
             ) {
-                moods.forEach { (emoji, text) ->
-                    val isSelected = userInput == text
-
-                    Box(
-                        modifier = Modifier
-                            .size(64.dp)
-                            .clip(CircleShape)
-                            .background(
-                                if (isSelected) {
-                                    Color.White.copy(alpha = 0.4f)
-                                } else {
-                                    Color.Transparent
-                                }
-                            )
-                            .clickable(
-                                enabled = !isLoading,
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() }
-                            ) {
-                                onInputChange(text)
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = emoji,
-                            fontSize = if (isSelected) 36.sp else 32.sp,
-                            modifier = Modifier.offset(y = if (isSelected) (-2).dp else 0.dp)
-                        )
-                    }
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = Color.White,
+                        strokeWidth = 2.5.dp
+                    )
+                } else {
+                    Text(
+                        text = "Continue",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
+            
+            Spacer(modifier = Modifier.height(32.dp))
+        }
+        
+        // Swipe Detector Surface (Invisible, left edge)
+        EdgeSwipeBackHandler(onBack = onBack)
+        }
+    }
+}
 
-            Spacer(modifier = Modifier.height(24.dp))
+data class MoodOption(val emoji: String, val label: String, val textValue: String)
 
-            // History button
-            TextButton(
-                onClick = onHistoryClick,
-                enabled = !isLoading
-            ) {
+@Composable
+fun MoodItemButton(
+    emoji: String,
+    label: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.width(56.dp)
+    ) {
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = if (isSelected) Color(0xFF3EA8A3).copy(alpha = 0.1f) else Color.White,
+            border = if (isSelected) androidx.compose.foundation.BorderStroke(2.dp, Color(0xFF3EA8A3)) else null,
+            modifier = Modifier
+                .size(56.dp)
+                .clip(RoundedCornerShape(16.dp)) // Clip ripple to shape
+                .clickable { onClick() }
+        ) {
+            Box(contentAlignment = Alignment.Center) {
                 Text(
-                    "📖 View History",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color(0xFF6B7280)
+                    text = emoji,
+                    fontSize = 28.sp
                 )
             }
         }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = label,
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Medium,
+            color = Color(0xFF11423D),
+            textAlign = TextAlign.Center,
+            maxLines = 1
+        )
     }
 }

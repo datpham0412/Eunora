@@ -1,8 +1,10 @@
 package org.example.project.ui
 
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -29,28 +31,14 @@ fun MoodDetailScreen(
 ) {
     val uiState by viewModel.state.collectAsState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("") },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Text("←", fontSize = 24.sp, color = Color.White)
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
-                )
-            )
-        },
-        containerColor = Color.Transparent
-    ) { padding ->
+    // System Back (Android)
+    BackHandler(onBack = onBackClick)
+
+    Box(modifier = Modifier.fillMaxSize()) {
         when {
             uiState.isLoading -> {
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding)
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center),
@@ -62,15 +50,13 @@ fun MoodDetailScreen(
             uiState.entry != null -> {
                 MoodDetailContent(
                     entry = uiState.entry!!,
-                    modifier = Modifier.padding(padding)
+                    modifier = Modifier.fillMaxSize()
                 )
             }
 
             else -> {
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding)
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     Column(
                         modifier = Modifier.align(Alignment.Center),
@@ -90,6 +76,9 @@ fun MoodDetailScreen(
                 }
             }
         }
+
+        // Swipe to Back (iOS style) - Top Z-Index
+        EdgeSwipeBackHandler(onBack = onBackClick)
     }
 
     DisposableEffect(Unit) {
@@ -114,7 +103,7 @@ private fun MoodDetailContent(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 28.dp)
-                .padding(vertical = 40.dp),
+                .padding(top = 80.dp, bottom = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {

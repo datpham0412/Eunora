@@ -55,11 +55,6 @@ fun MoodHistoryScreen(
                         fontWeight = FontWeight.Bold
                     )
                 },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Text("←", fontSize = 24.sp, color = Color(0xFF1F2937))
-                    }
-                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent,
                     titleContentColor = Color(0xFF1F2937)
@@ -67,6 +62,9 @@ fun MoodHistoryScreen(
             )
         }
     ) { padding ->
+        // Handle Back Navigation
+        BackHandler(onBack = onBackClick)
+        
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -125,6 +123,9 @@ fun MoodHistoryScreen(
                     }
                 }
             }
+            
+            // Swipe support
+            EdgeSwipeBackHandler(onBack = onBackClick)
         }
     }
 
