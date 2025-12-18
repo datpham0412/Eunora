@@ -86,7 +86,7 @@ fun Screen1_VibeOnly(
                             .fillMaxWidth(0.85f)
                             .aspectRatio(1f), // Keep it square
                         shape = RoundedCornerShape(32.dp),
-                        shadowElevation = 16.dp,
+                        shadowElevation = 0.dp,
                         color = Color.White
                     ) {
                         Image(
