@@ -230,7 +230,7 @@ fun Screen5_GentleGuidance(
                         )
                     ) {
                         Text(
-                            "New Reflection",
+                            "View Summary",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.White,

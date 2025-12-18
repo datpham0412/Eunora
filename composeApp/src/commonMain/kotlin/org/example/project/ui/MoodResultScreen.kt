@@ -91,7 +91,16 @@ fun MoodResultScreen(
                         4 -> Screen5_GentleGuidance(
                             mood = moodEntry.normalizedMood,
                             adviceText = moodEntry.ai.advice,
-                            onNewMood = onNewMood,
+                            onNewMood = {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(page + 1)
+                                }
+                            },
+                            isVisible = pagerState.currentPage == page
+                        )
+                        5 -> Screen6_Summary(
+                            moodEntry = moodEntry,
+                            onComplete = onNewMood, // Final exit
                             isVisible = pagerState.currentPage == page
                         )
                     }
@@ -153,7 +162,8 @@ private fun buildPageFlow(moodGroup: MoodGroup): List<PageType> {
             PageType.CoreScreen(1),  // Screen 2: Mood Meaning
             PageType.CoreScreen(2),  // Screen 3: Emotional Spectrums
             PageType.CoreScreen(3),  // Screen 4: Your Reflection
-            PageType.CoreScreen(4)   // Screen 5: Gentle Guidance
+            PageType.CoreScreen(4),  // Screen 5: Gentle Guidance
+            PageType.CoreScreen(5)   // Screen 6: Summary
         )
 
         MoodGroup.LOW_ENERGY -> listOf(
@@ -162,7 +172,8 @@ private fun buildPageFlow(moodGroup: MoodGroup): List<PageType> {
             PageType.CoreScreen(2),     // Screen 3: Emotional Spectrums
             PageType.PermissionMarker,  // PERMISSION MARKER
             PageType.CoreScreen(3),     // Screen 4: Your Reflection
-            PageType.CoreScreen(4)      // Screen 5: Gentle Guidance
+            PageType.CoreScreen(4),     // Screen 5: Gentle Guidance
+            PageType.CoreScreen(5)      // Screen 6: Summary
         )
 
         MoodGroup.POSITIVE -> listOf(
@@ -171,7 +182,8 @@ private fun buildPageFlow(moodGroup: MoodGroup): List<PageType> {
             PageType.CoreScreen(2),  // Screen 3: Emotional Spectrums
             PageType.CoreScreen(3),  // Screen 4: Your Reflection
             PageType.HighlightMarker,// HIGHLIGHT MARKER
-            PageType.CoreScreen(4)   // Screen 5: Gentle Guidance
+            PageType.CoreScreen(4),  // Screen 5: Gentle Guidance
+            PageType.CoreScreen(5)   // Screen 6: Summary
         )
 
         MoodGroup.NEUTRAL -> listOf(
@@ -179,7 +191,8 @@ private fun buildPageFlow(moodGroup: MoodGroup): List<PageType> {
             PageType.CoreScreen(1),  // Screen 2: Mood Meaning
             PageType.CoreScreen(2),  // Screen 3: Emotional Spectrums
             PageType.CoreScreen(3),  // Screen 4: Your Reflection
-            PageType.CoreScreen(4)   // Screen 5: Gentle Guidance
+            PageType.CoreScreen(4),  // Screen 5: Gentle Guidance
+            PageType.CoreScreen(5)   // Screen 6: Summary
         )
     }
 }

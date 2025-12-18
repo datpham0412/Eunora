@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import model.MoodEntry
 import org.example.project.ui.mood_result.*
+import util.formatDate
 import viewmodel.MoodDetailViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -133,7 +134,7 @@ private fun MoodDetailContent(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = formatFullDateTime(entry.timestamp),
+                    text = formatDate(entry.timestamp),
                     fontSize = 16.sp,
                     color = Color.White.copy(alpha = 0.75f)
                 )
@@ -291,35 +292,4 @@ private fun MoodDetailContent(
     }
 }
 
-private fun formatFullDateTime(timestamp: Long): String {
-    // Simple date/time formatting without kotlinx.datetime
-    val daysSinceEpoch = (timestamp / (24 * 60 * 60 * 1000L)).toInt()
-    val year = 1970 + (daysSinceEpoch / 365)
-    val dayOfYear = daysSinceEpoch % 365
 
-    val monthDays = listOf(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
-    val monthNames = listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
-
-    var remainingDays = dayOfYear
-    var monthIndex = 0
-    for (i in monthDays.indices) {
-        if (remainingDays <= monthDays[i]) {
-            monthIndex = i
-            break
-        }
-        remainingDays -= monthDays[i]
-    }
-
-    val day = remainingDays + 1
-    val month = monthNames.getOrNull(monthIndex) ?: "Jan"
-
-    // Time calculation
-    val totalMinutes = ((timestamp / 1000 / 60) % (24 * 60)).toInt()
-    val hour = totalMinutes / 60
-    val minute = totalMinutes % 60
-    val amPm = if (hour < 12) "AM" else "PM"
-    val hour12 = if (hour == 0) 12 else if (hour > 12) hour - 12 else hour
-
-    return "$month $day, $year • $hour12:${minute.toString().padStart(2, '0')} $amPm"
-}
