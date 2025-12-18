@@ -55,6 +55,9 @@ fun MoodResultScreen(
 
     val coroutineScope = rememberCoroutineScope()
 
+    // Local state to track updates (like highlight) during the flow
+    var currentEntry by remember(moodEntry) { mutableStateOf(moodEntry) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -69,28 +72,28 @@ fun MoodResultScreen(
                 is PageType.CoreScreen -> {
                     when (pageType.index) {
                         0 -> Screen1_VibeOnly(
-                            mood = moodEntry.normalizedMood,
-                            artAssetId = moodEntry.art.assetId,
+                            mood = currentEntry.normalizedMood,
+                            artAssetId = currentEntry.art.assetId,
                             getMoodArtworkResource = ::getMoodArtworkResource
                         )
                         1 -> Screen2_MoodMeaning(
-                            mood = moodEntry.normalizedMood,
-                            emotion = moodEntry.ai.emotion,
+                            mood = currentEntry.normalizedMood,
+                            emotion = currentEntry.ai.emotion,
                             isVisible = pagerState.currentPage == page
                         )
                         2 -> Screen3_EmotionalSpectrums(
-                            mood = moodEntry.normalizedMood,
-                            emotion = moodEntry.ai.emotion,
+                            mood = currentEntry.normalizedMood,
+                            emotion = currentEntry.ai.emotion,
                             isVisible = pagerState.currentPage == page
                         )
                         3 -> Screen4_YourReflection(
-                            mood = moodEntry.normalizedMood,
-                            journalText = moodEntry.ai.journal,
+                            mood = currentEntry.normalizedMood,
+                            journalText = currentEntry.ai.journal,
                             isVisible = pagerState.currentPage == page
                         )
                         4 -> Screen5_GentleGuidance(
-                            mood = moodEntry.normalizedMood,
-                            adviceText = moodEntry.ai.advice,
+                            mood = currentEntry.normalizedMood,
+                            adviceText = currentEntry.ai.advice,
                             onNewMood = {
                                 coroutineScope.launch {
                                     pagerState.animateScrollToPage(page + 1)
@@ -99,7 +102,7 @@ fun MoodResultScreen(
                             isVisible = pagerState.currentPage == page
                         )
                         5 -> Screen6_Summary(
-                            moodEntry = moodEntry,
+                            moodEntry = currentEntry,
                             onComplete = onNewMood, // Final exit
                             isVisible = pagerState.currentPage == page
                         )
@@ -107,7 +110,7 @@ fun MoodResultScreen(
                 }
                 PageType.PauseMarker -> {
                     PauseMarker(
-                        mood = moodEntry.normalizedMood,
+                        mood = currentEntry.normalizedMood,
                         onComplete = {
                             coroutineScope.launch {
                                 pagerState.animateScrollToPage(page + 1)
@@ -117,7 +120,7 @@ fun MoodResultScreen(
                 }
                 PageType.PermissionMarker -> {
                     PermissionMarker(
-                        mood = moodEntry.normalizedMood,
+                        mood = currentEntry.normalizedMood,
                         onContinue = {
                             coroutineScope.launch {
                                 pagerState.animateScrollToPage(page + 1)
@@ -128,10 +131,13 @@ fun MoodResultScreen(
                 }
                 PageType.HighlightMarker -> {
                     HighlightMarker(
-                        mood = moodEntry.normalizedMood,
+                        mood = currentEntry.normalizedMood,
                         onComplete = { input ->
                             // Save highlight to database
-                            onHighlightCapture(moodEntry.id, input)
+                            onHighlightCapture(currentEntry.id, input)
+                            // Update local state so next screens see it
+                            currentEntry = currentEntry.copy(highlight = input)
+                            
                             coroutineScope.launch {
                                 pagerState.animateScrollToPage(page + 1)
                             }

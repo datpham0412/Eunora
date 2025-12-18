@@ -51,7 +51,7 @@ fun Screen6_Summary(
                 .fillMaxSize()
                 .verticalScroll(scrollState)
                 .padding(horizontal = 24.dp)
-                .padding(top = 24.dp, bottom = 100.dp), // Bottom padding for button clearance
+                .padding(top = 64.dp, bottom = 100.dp), // Increased top padding
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // 1. Mood Image
@@ -129,26 +129,27 @@ fun Screen6_Summary(
 
             // 3b. Highlight (Positive Moods)
             moodEntry.highlight?.let { highlight ->
+                val baseMoodColor = getMoodColor(moodEntry.normalizedMood)
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp))
-                        .background(Color(0xFFF0FDFA)) // Light Teal
+                        .background(baseMoodColor.copy(alpha = 0.1f)) // Dynamic tinted background
                         .padding(20.dp)
                 ) {
                     Column {
                         Text(
-                            text = "A Moment to Keep",
-                            fontSize = 14.sp,
+                            text = "✨ A Moment to Keep",
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF0F766E), // Teal 700
+                            color = baseMoodColor, // Dynamic title color
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
                         Text(
                             text = highlight,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium,
-                            color = Color(0xFF134E4A), // Teal 800
+                            color = Color(0xFF1F2937), // Dark gray for safe readability vs mood colors
                             lineHeight = 24.sp
                         )
                     }

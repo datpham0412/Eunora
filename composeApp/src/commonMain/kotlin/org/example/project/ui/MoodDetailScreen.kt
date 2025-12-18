@@ -23,6 +23,15 @@ import model.MoodEntry
 import org.example.project.ui.mood_result.*
 import util.formatDate
 import viewmodel.MoodDetailViewModel
+import androidx.compose.foundation.Image
+import androidx.compose.ui.layout.ContentScale
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
+import ai_mood_journal.composeapp.generated.resources.Res
+import ai_mood_journal.composeapp.generated.resources.mood_calm_positive
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.shape.RoundedCornerShape
+import model.NormalizedMood
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -98,196 +107,233 @@ fun MoodDetailScreen(
     }
 }
 
+
+
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun MoodDetailContent(
     entry: MoodEntry,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier.fillMaxSize()) {
-        // Abstract background
-        MoodAbstractBackground(entry.normalizedMood)
+    val scrollState = rememberScrollState()
+    val date = formatDate(entry.timestamp)
 
-        // Scrollable content
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(extractMoodBackgroundColor(entry.normalizedMood))
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 28.dp)
-                .padding(top = 80.dp, bottom = 40.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+                .verticalScroll(scrollState)
+                .padding(horizontal = 24.dp)
+                .padding(top = 100.dp, bottom = 40.dp), // Top padding for back button
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Header
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+            // 1. Mood Image
+            val imageRes = when (entry.normalizedMood) {
+                NormalizedMood.CALM_POSITIVE -> Res.drawable.mood_calm_positive
+                // Add other moods here when resources are available
+                // NormalizedMood.HAPPY_ENERGETIC -> Res.drawable.mood_happy
+                else -> null
+            }
+
+            Box(
+                modifier = Modifier
+                    .size(200.dp)
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(Color.White.copy(alpha = 0.5f))
+            ) {
+                if (imageRes != null) {
+                    Image(
+                        painter = painterResource(imageRes),
+                        contentDescription = "Mood Illustration",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    // Fallback: Abstract Wave or Emoji
+                    MoodAbstractBackground(entry.normalizedMood)
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(getMoodEmoji(entry.normalizedMood), fontSize = 64.sp)
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // 2. Header Row: "Your Reflection" + Date
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = getMoodEmoji(entry.normalizedMood),
-                    fontSize = 64.sp
+                    text = "Your Reflection",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF1F2937)
                 )
-                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = date,
+                    fontSize = 14.sp,
+                    color = Color(0xFF6B7280)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // 3. User Journal (Your Takeaway)
+            CalmSurface(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(20.dp)) {
+                    Text(
+                        text = "Your Takeaway",
+                        fontSize = 14.sp,
+                        color = Color(0xFF6B7280),
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    Text(
+                        text = if (entry.ai.journal.isNotBlank()) entry.ai.journal else "No details added.",
+                        fontSize = 16.sp,
+                        color = Color(0xFF374151),
+                        lineHeight = 24.sp
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // 3b. Highlight (Positive Moods)
+            entry.highlight?.let { highlight ->
+                val baseMoodColor = getMoodColor(entry.normalizedMood)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(baseMoodColor.copy(alpha = 0.1f)) // Dynamic tinted background
+                        .padding(20.dp)
+                ) {
+                    Column {
+                        Text(
+                            text = "✨ A Moment to Keep",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = baseMoodColor, // Dynamic title color
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        Text(
+                            text = highlight,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = Color(0xFF1F2937), // Dark gray vs mood colors
+                            lineHeight = 24.sp
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            // 4. Highlight Box -> Full Gentle Advice (Daily Advice)
+             Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color(0xFFFFF7ED)) // Light Beige/Orange
+                    .padding(20.dp)
+            ) {
+                Column {
+                   Text(
+                        text = "Daily Advice",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF9a3412),
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    Text(
+                        text = entry.ai.advice, // FULL ADVICE
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color(0xFF92400E),
+                        lineHeight = 24.sp
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // 5. Emotional Spectrum Heading
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Emotional Spectrum",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF1F2937)
+                )
                 Text(
                     text = formatMoodName(entry.normalizedMood),
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White.copy(alpha = 0.95f)
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = formatDate(entry.timestamp),
-                    fontSize = 16.sp,
-                    color = Color.White.copy(alpha = 0.75f)
+                    fontSize = 14.sp,
+                    color = Color(0xFF6B7280)
                 )
             }
+            
+            Spacer(modifier = Modifier.height(16.dp))
 
-            // Highlight section (if available)
-            entry.highlight?.let { highlight ->
-                CalmSurface(modifier = Modifier.fillMaxWidth()) {
-                    Column(
-                        modifier = Modifier.padding(32.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(bottom = 16.dp)
-                        ) {
-                            Text(text = "✨", fontSize = 24.sp)
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = "Small Moment",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF1F2937)
-                            )
-                        }
-
-                        Text(
-                            text = "\"$highlight\"",
-                            fontSize = 18.sp,
-                            color = Color(0xFF92400E),
-                            fontWeight = FontWeight.Medium,
-                            textAlign = TextAlign.Center,
-                            lineHeight = 28.sp
-                        )
-                    }
-                }
-            }
-
-            // Reflection section
-            CalmSurface(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(32.dp)) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(bottom = 20.dp)
-                    ) {
-                        Text(text = "✨", fontSize = 24.sp)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "Your Reflection",
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1F2937)
-                        )
-                    }
-
-                    Text(
-                        text = entry.ai.journal,
-                        fontSize = 16.sp,
-                        color = Color(0xFF475569),
-                        lineHeight = 26.sp
+            // 5b. Spectrum Sliders (Using EmotionalSpectrum from Screen 3)
+            // Emotional Tone
+            EmotionalSpectrum(
+                label = "Emotional tone",
+                leftLabel = "Difficult",
+                rightLabel = "Positive",
+                position = entry.ai.emotion.positivity,
+                gradient = Brush.horizontalGradient(
+                    listOf(
+                        Color(0xFF9CA3AF).copy(alpha = 0.3f),
+                        Color(0xFF10B981).copy(alpha = 0.3f)
                     )
-                }
-            }
-
-            // Emotional spectrums
-            CalmSurface(modifier = Modifier.fillMaxWidth()) {
-                Column(
-                    modifier = Modifier.padding(32.dp),
-                    verticalArrangement = Arrangement.spacedBy(24.dp)
-                ) {
-                    Text(
-                        text = "How you're feeling",
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1F2937)
+                ),
+                markerColor = Color(0xFF10B981),
+                isVisible = true
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            // Energy
+            EmotionalSpectrum(
+                label = "Energy level",
+                leftLabel = "Resting",
+                rightLabel = "Energized",
+                position = entry.ai.emotion.energy,
+                gradient = Brush.horizontalGradient(
+                    listOf(
+                        Color(0xFFA78BFA).copy(alpha = 0.3f), // Using colors from MoodDetail/Screen3
+                        Color(0xFFF59E0B).copy(alpha = 0.3f)
                     )
-
-                    // Spectrum 1: Emotional tone
-                    EmotionalSpectrum(
-                        label = "Emotional tone",
-                        leftLabel = "Difficult",
-                        rightLabel = "Positive",
-                        position = entry.ai.emotion.positivity,
-                        gradient = Brush.horizontalGradient(
-                            listOf(
-                                Color(0xFF9CA3AF).copy(alpha = 0.3f),
-                                Color(0xFF10B981).copy(alpha = 0.3f)
-                            )
-                        ),
-                        markerColor = Color(0xFF10B981),
-                        isVisible = true
+                ),
+                markerColor = Color(0xFFF59E0B),
+                isVisible = true
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            // Inner State
+            EmotionalSpectrum(
+                label = "Inner state",
+                leftLabel = "At ease",
+                rightLabel = "Tense",
+                position = entry.ai.emotion.stress,
+                gradient = Brush.horizontalGradient(
+                    listOf(
+                        Color(0xFF10B981).copy(alpha = 0.3f),
+                        Color(0xFFF97316).copy(alpha = 0.3f)
                     )
+                ),
+                markerColor = if (entry.ai.emotion.stress > 0.6f) Color(0xFFF97316) else Color(0xFF10B981),
+                isVisible = true
+            )
 
-                    // Spectrum 2: Energy level
-                    EmotionalSpectrum(
-                        label = "Energy level",
-                        leftLabel = "Resting",
-                        rightLabel = "Energized",
-                        position = entry.ai.emotion.energy,
-                        gradient = Brush.horizontalGradient(
-                            listOf(
-                                Color(0xFFA78BFA).copy(alpha = 0.3f),
-                                Color(0xFFF59E0B).copy(alpha = 0.3f)
-                            )
-                        ),
-                        markerColor = Color(0xFFF59E0B),
-                        isVisible = true
-                    )
-
-                    // Spectrum 3: Inner state
-                    EmotionalSpectrum(
-                        label = "Inner state",
-                        leftLabel = "At ease",
-                        rightLabel = "Tense",
-                        position = entry.ai.emotion.stress,
-                        gradient = Brush.horizontalGradient(
-                            listOf(
-                                Color(0xFF10B981).copy(alpha = 0.3f),
-                                Color(0xFFF97316).copy(alpha = 0.3f)
-                            )
-                        ),
-                        markerColor = if (entry.ai.emotion.stress > 0.6f)
-                            Color(0xFFF97316) else Color(0xFF10B981),
-                        isVisible = true
-                    )
-                }
-            }
-
-            // Guidance section
-            CalmSurface(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(32.dp)) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(bottom = 20.dp)
-                    ) {
-                        Text(text = "💡", fontSize = 24.sp)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "Gentle Guidance",
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1F2937)
-                        )
-                    }
-
-                    Text(
-                        text = entry.ai.advice,
-                        fontSize = 16.sp,
-                        color = Color(0xFF475569),
-                        lineHeight = 26.sp
-                    )
-                }
-            }
+            Spacer(modifier = Modifier.height(48.dp))
         }
     }
 }
