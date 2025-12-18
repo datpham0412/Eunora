@@ -19,6 +19,7 @@ import model.NormalizedMood
 import org.example.project.ui.mood_result.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.DrawableResource
+import ai_mood_journal.composeapp.generated.resources.*
 
 /**
  * Page content types
@@ -246,5 +247,14 @@ private fun PageIndicators(
 @OptIn(ExperimentalResourceApi::class)
 fun getMoodArtworkResource(mood: NormalizedMood, assetId: String?): DrawableResource? =
     when (mood) {
-        else -> null // Fallback to abstract background for moods without images
+        NormalizedMood.CALM_POSITIVE -> Res.drawable.mood_calm_positive
+        NormalizedMood.HAPPY_ENERGETIC -> Res.drawable.mood_happy_energetic
+        NormalizedMood.EXCITED -> Res.drawable.mood_excited
+        NormalizedMood.NEUTRAL -> Res.drawable.mood_neutral
+        NormalizedMood.STRESSED -> Res.drawable.mood_stressed
+        NormalizedMood.ANXIOUS -> Res.drawable.mood_anxious
+        NormalizedMood.SAD -> Res.drawable.mood_sad
+        NormalizedMood.DEPRESSED -> Res.drawable.mood_depressed
+        NormalizedMood.ANGRY -> Res.drawable.mood_angry
+        NormalizedMood.OVERWHELMED -> Res.drawable.mood_overwhelmed
     }

@@ -23,6 +23,13 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
+import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.material3.Surface
+import androidx.compose.foundation.shape.RoundedCornerShape
+
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun Screen1_VibeOnly(
@@ -61,28 +68,51 @@ fun Screen1_VibeOnly(
             MoodAbstractBackground(mood)
         }
 
-        val imageResource = getMoodArtworkResource(mood, artAssetId)
-        if (imageResource != null) {
-            Image(
-                painter = painterResource(imageResource),
-                contentDescription = "Mood atmosphere",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
-        }
-
-        // Animated mood name reveal
-        AnimatedVisibility(
-            visible = showContent,
-            enter = fadeIn(
-                animationSpec = tween(800, easing = FastOutSlowInEasing)
-            ) + scaleIn(
-                initialScale = 0.7f,
-                animationSpec = tween(800, easing = FastOutSlowInEasing)
-            ),
-            modifier = Modifier.align(Alignment.Center)
+        // Main Content: Image + Text
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            MoodNameText(mood = mood)
+            val imageResource = getMoodArtworkResource(mood, artAssetId)
+            if (imageResource != null) {
+                AnimatedVisibility(
+                    visible = showContent,
+                    enter = fadeIn(animationSpec = tween(1200)) + 
+                            scaleIn(initialScale = 0.9f, animationSpec = tween(1500, easing = LinearOutSlowInEasing))
+                ) {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth(0.85f)
+                            .aspectRatio(1f), // Keep it square
+                        shape = RoundedCornerShape(32.dp),
+                        shadowElevation = 16.dp,
+                        color = Color.White
+                    ) {
+                        Image(
+                            painter = painterResource(imageResource),
+                            contentDescription = "Mood atmosphere",
+                            contentScale = ContentScale.Crop, // Fill the square card
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(48.dp))
+
+            // Animated mood name reveal
+            AnimatedVisibility(
+                visible = showContent,
+                enter = fadeIn(
+                    animationSpec = tween(800, delayMillis = 300, easing = FastOutSlowInEasing)
+                ) + scaleIn(
+                    initialScale = 0.7f,
+                    animationSpec = tween(800, delayMillis = 300, easing = FastOutSlowInEasing)
+                )
+            ) {
+                MoodNameText(mood = mood)
+            }
         }
     }
 }
