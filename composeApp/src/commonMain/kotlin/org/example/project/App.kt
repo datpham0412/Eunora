@@ -118,7 +118,7 @@ fun App() {
                             moodEntry = entry,
                             onNewMood = {
                                 moodViewModel.clearMood()
-                                currentScreen = Screen.Welcome // Return to Welcome after result
+                                currentScreen = Screen.Input // Return to Input after result
                             },
                             onHistoryClick = {
                                 historyViewModel = MoodHistoryViewModel(repository)

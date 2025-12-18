@@ -18,12 +18,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import model.MoodEntry
 import model.NormalizedMood
-import ai_mood_journal.composeapp.generated.resources.Res
-import ai_mood_journal.composeapp.generated.resources.mood_calm_positive
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
+import ai_mood_journal.composeapp.generated.resources.*
 
 import util.formatDate
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
 
 import androidx.compose.ui.graphics.Brush
 
@@ -57,9 +56,15 @@ fun Screen6_Summary(
             // 1. Mood Image
             val imageRes = when (moodEntry.normalizedMood) {
                 NormalizedMood.CALM_POSITIVE -> Res.drawable.mood_calm_positive
-                // Add other moods here when resources are available
-                // NormalizedMood.HAPPY_ENERGETIC -> Res.drawable.mood_happy
-                else -> null
+                NormalizedMood.HAPPY_ENERGETIC -> Res.drawable.mood_happy_energetic
+                NormalizedMood.EXCITED -> Res.drawable.mood_excited
+                NormalizedMood.NEUTRAL -> Res.drawable.mood_neutral
+                NormalizedMood.STRESSED -> Res.drawable.mood_stressed
+                NormalizedMood.ANXIOUS -> Res.drawable.mood_anxious
+                NormalizedMood.SAD -> Res.drawable.mood_sad
+                NormalizedMood.DEPRESSED -> Res.drawable.mood_depressed
+                NormalizedMood.ANGRY -> Res.drawable.mood_angry
+                NormalizedMood.OVERWHELMED -> Res.drawable.mood_overwhelmed
             }
 
             Box(
