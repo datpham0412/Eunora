@@ -174,7 +174,7 @@ fun PermissionMarker(
                             enter = fadeIn(animationSpec = tween(500))
                         ) {
                             Text(
-                                text = "You don't have to go further.",
+                                text = "Take it easy on yourself.",
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFF1F2937),
@@ -188,7 +188,7 @@ fun PermissionMarker(
                             enter = fadeIn(animationSpec = tween(500))
                         ) {
                             Text(
-                                text = "You can end this check-in now, or continue when you feel ready.",
+                                text = "Processing heavy emotions can be draining. It's okay to stop here and rest, or continue if you're ready to explore more.",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Normal,
                                 color = Color(0xFF4B5563),

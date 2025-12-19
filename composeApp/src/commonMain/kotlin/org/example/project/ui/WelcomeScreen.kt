@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 fun WelcomeScreen(
     state: viewmodel.WelcomeUIState,
     onStartCheckIn: () -> Unit,
+    onMoodClick: (String) -> Unit = {},
     onViewHistory: () -> Unit = {}
 ) {
     // Theme Colors
@@ -142,7 +143,12 @@ fun WelcomeScreen(
                     }
                 } else {
                     state.recentMoods.forEach { item ->
-                        MoodCard(emoji = item.emoji, label = item.label, date = item.date)
+                        MoodCard(
+                            emoji = item.emoji,
+                            label = item.label,
+                            date = item.date,
+                            onClick = { onMoodClick(item.id) }
+                        )
                     }
                     // Fill remaining space if less than 3
                      repeat(3 - state.recentMoods.size) {
@@ -233,11 +239,15 @@ fun WelcomeScreen(
 }
 
 @Composable
-fun MoodCard(emoji: String, label: String, date: String) {
+fun MoodCard(emoji: String, label: String, date: String, onClick: () -> Unit) {
     Surface(
         shape = RoundedCornerShape(24.dp),
         color = Color.White,
-        modifier = Modifier.width(100.dp).height(140.dp),
+        modifier = Modifier
+            .width(100.dp)
+            .height(140.dp)
+            .clip(RoundedCornerShape(24.dp))
+            .clickable { onClick() },
         shadowElevation = 0.dp // Flat style as per mockup
     ) {
         Column(

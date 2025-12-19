@@ -9,10 +9,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import model.MoodEntry
 import model.NormalizedMood
 import repository.MoodRepository
-import util.currentTimeMillis
 
 data class WelcomeUIState(
     val totalEntries: Int = 0,
@@ -23,6 +21,7 @@ data class WelcomeUIState(
 )
 
 data class WelcomeMoodItem(
+    val id: String,
     val emoji: String,
     val label: String,
     val date: String
@@ -79,6 +78,7 @@ class WelcomeViewModel(
                             .take(3)
                             .map { entry ->
                                 WelcomeMoodItem(
+                                    id = entry.id,
                                     emoji = getMoodEmoji(entry.normalizedMood),
                                     label = formatMoodLabel(entry.normalizedMood.name),
                                     date = formatDate(entry.timestamp)

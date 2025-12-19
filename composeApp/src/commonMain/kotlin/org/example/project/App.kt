@@ -81,6 +81,10 @@ fun App() {
                     WelcomeScreen(
                         state = welcomeState,
                         onStartCheckIn = { currentScreen = Screen.Input },
+                        onMoodClick = { entryId ->
+                            detailViewModel = MoodDetailViewModel(repository, entryId)
+                            currentScreen = Screen.Detail(entryId)
+                        },
                         onViewHistory = {
                             historyViewModel = MoodHistoryViewModel(repository)
                             currentScreen = Screen.History
@@ -158,7 +162,11 @@ fun App() {
                             viewModel = vm,
                             onBackClick = {
                                 detailViewModel = null
-                                currentScreen = Screen.History
+                                if (historyViewModel != null) {
+                                    currentScreen = Screen.History
+                                } else {
+                                    currentScreen = Screen.Welcome
+                                }
                             }
                         )
                     }
