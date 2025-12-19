@@ -29,6 +29,11 @@ import model.NormalizedMood
  * - Dark text inside container
  * - Staggered entrance animations
  */
+import androidx.compose.foundation.background
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.graphics.Brush
+
 @Composable
 fun Screen2_MoodMeaning(
     mood: NormalizedMood,
@@ -81,7 +86,9 @@ fun Screen2_MoodMeaning(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
-                    modifier = Modifier.padding(40.dp),
+                    modifier = Modifier
+                        .heightIn(max = 600.dp)
+                        .padding(40.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     // Animated emoji with floating effect
@@ -134,19 +141,52 @@ fun Screen2_MoodMeaning(
                         )
                     }
 
-                    // Reflective summary with typing animation
+                    // Reflective summary with typing animation and scroll
+                    val scrollState = rememberScrollState()
+                    val canScrollDown by remember {
+                        derivedStateOf {
+                            scrollState.value < scrollState.maxValue
+                        }
+                    }
+
                     AnimatedVisibility(
                         visible = showSummary,
                         enter = fadeIn(animationSpec = tween(800))
                     ) {
-                        TypewriterText(
-                            text = getReflectiveSummary(emotion),
-                            fontSize = 20.sp,
-                            color = Color(0xFF475569),
-                            textAlign = TextAlign.Center,
-                            delayMs = 40L,
-                            isVisible = showSummary
-                        )
+                         Box(modifier = Modifier.fillMaxWidth().weight(1f, fill = false)) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .verticalScroll(scrollState)
+                            ) {
+                                TypewriterText(
+                                    text = getReflectiveSummary(emotion),
+                                    fontSize = 20.sp,
+                                    color = Color(0xFF475569),
+                                    textAlign = TextAlign.Center,
+                                    delayMs = 40L,
+                                    isVisible = showSummary
+                                )
+                            }
+                            
+                            // Scroll indicator gradient at bottom
+                            if (canScrollDown) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(40.dp)
+                                        .align(Alignment.BottomCenter)
+                                        .background(
+                                            Brush.verticalGradient(
+                                                listOf(
+                                                    Color.Transparent,
+                                                    Color.White
+                                                )
+                                            )
+                                        )
+                                )
+                            }
+                        }
                     }
                 }
             }

@@ -324,7 +324,9 @@ fun HighlightMarker(
                     )
         ) {
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .imePadding(),
                 contentAlignment = Alignment.Center
             ) {
                 CalmSurface(

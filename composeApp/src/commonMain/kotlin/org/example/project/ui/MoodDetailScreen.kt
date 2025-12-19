@@ -60,6 +60,7 @@ fun MoodDetailScreen(
             uiState.entry != null -> {
                 MoodDetailContent(
                     entry = uiState.entry!!,
+                    onBackClick = onBackClick,
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -91,13 +92,16 @@ fun MoodDetailScreen(
         EdgeSwipeBackHandler(onBack = onBackClick)
 
         // Back Button
-        AdaptiveBackButton(
-            onClick = onBackClick,
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .statusBarsPadding() // Ensure it clears status bar
-                .padding(start = 8.dp, top = 16.dp, end = 16.dp, bottom = 16.dp)
-        )
+        // Back Button (Only for loading/error)
+        if (uiState.entry == null) {
+            AdaptiveBackButton(
+                onClick = onBackClick,
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .statusBarsPadding() // Ensure it clears status bar
+                    .padding(start = 8.dp, top = 16.dp, end = 16.dp, bottom = 16.dp)
+            )
+        }
     }
 
     DisposableEffect(Unit) {
@@ -113,6 +117,7 @@ fun MoodDetailScreen(
 @Composable
 private fun MoodDetailContent(
     entry: MoodEntry,
+    onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
@@ -123,223 +128,242 @@ private fun MoodDetailContent(
             .fillMaxSize()
             .background(extractMoodBackgroundColor(entry.normalizedMood))
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(horizontal = 24.dp)
-                .padding(top = 100.dp, bottom = 40.dp), // Top padding for back button
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            // 1. Mood Image
-            val imageRes = when (entry.normalizedMood) {
-                NormalizedMood.CALM_POSITIVE -> Res.drawable.mood_calm_positive
-                NormalizedMood.HAPPY_ENERGETIC -> Res.drawable.mood_happy_energetic
-                NormalizedMood.EXCITED -> Res.drawable.mood_excited
-                NormalizedMood.NEUTRAL -> Res.drawable.mood_neutral
-                NormalizedMood.STRESSED -> Res.drawable.mood_stressed
-                NormalizedMood.ANXIOUS -> Res.drawable.mood_anxious
-                NormalizedMood.SAD -> Res.drawable.mood_sad
-                NormalizedMood.DEPRESSED -> Res.drawable.mood_depressed
-                NormalizedMood.ANGRY -> Res.drawable.mood_angry
-                NormalizedMood.OVERWHELMED -> Res.drawable.mood_overwhelmed
-            }
-
-            Box(
+        Column(modifier = Modifier.fillMaxSize()) {
+            // Header (Fixed)
+            Spacer(modifier = Modifier.height(16.dp))
+            AdaptiveBackButton(
+                onClick = onBackClick,
                 modifier = Modifier
-                    .size(200.dp)
-                    .clip(RoundedCornerShape(24.dp))
-                    .background(Color.White.copy(alpha = 0.5f))
-            ) {
-                if (imageRes != null) {
-                    Image(
-                        painter = painterResource(imageRes),
-                        contentDescription = "Mood Illustration",
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
-                    // Fallback: Abstract Wave or Emoji
-                    MoodAbstractBackground(entry.normalizedMood)
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text(getMoodEmoji(entry.normalizedMood), fontSize = 64.sp)
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // 2. Header Row: "Your Reflection" + Date
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Your Reflection",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1F2937)
-                )
-                Text(
-                    text = date,
-                    fontSize = 14.sp,
-                    color = Color(0xFF6B7280)
-                )
-            }
-
+                    .padding(start = 8.dp)
+                    .statusBarsPadding()
+            )
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 3. User Journal (Your Takeaway)
-            CalmSurface(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(20.dp)) {
-                    Text(
-                        text = "Your Takeaway",
-                        fontSize = 14.sp,
-                        color = Color(0xFF6B7280),
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-                    Text(
-                        text = if (entry.ai.journal.isNotBlank()) entry.ai.journal else "No details added.",
-                        fontSize = 16.sp,
-                        color = Color(0xFF374151),
-                        lineHeight = 24.sp
-                    )
+            // Scrollable Content
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .verticalScroll(scrollState)
+                    .padding(horizontal = 24.dp)
+                    .padding(bottom = 40.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // 1. Mood Image
+                val imageRes = when (entry.normalizedMood) {
+                    NormalizedMood.CALM_POSITIVE -> Res.drawable.mood_calm_positive
+                    NormalizedMood.HAPPY_ENERGETIC -> Res.drawable.mood_happy_energetic
+                    NormalizedMood.EXCITED -> Res.drawable.mood_excited
+                    NormalizedMood.NEUTRAL -> Res.drawable.mood_neutral
+                    NormalizedMood.STRESSED -> Res.drawable.mood_stressed
+                    NormalizedMood.ANXIOUS -> Res.drawable.mood_anxious
+                    NormalizedMood.SAD -> Res.drawable.mood_sad
+                    NormalizedMood.DEPRESSED -> Res.drawable.mood_depressed
+                    NormalizedMood.ANGRY -> Res.drawable.mood_angry
+                    NormalizedMood.OVERWHELMED -> Res.drawable.mood_overwhelmed
                 }
-            }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // 3b. Highlight (Positive Moods)
-            entry.highlight?.let { highlight ->
-                val baseMoodColor = getMoodColor(entry.normalizedMood)
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(baseMoodColor.copy(alpha = 0.1f)) // Dynamic tinted background
-                        .padding(20.dp)
+                        .size(200.dp)
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(Color.White.copy(alpha = 0.5f))
                 ) {
-                    Column {
+                    if (imageRes != null) {
+                        Image(
+                            painter = painterResource(imageRes),
+                            contentDescription = "Mood Illustration",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        // Fallback: Abstract Wave or Emoji
+                        MoodAbstractBackground(entry.normalizedMood)
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(getMoodEmoji(entry.normalizedMood), fontSize = 64.sp)
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // 2. Header Row: "Your Reflection" + Date
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Your Reflection",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF1F2937)
+                    )
+                    Text(
+                        text = date,
+                        fontSize = 14.sp,
+                        color = Color(0xFF6B7280)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // 3. User Journal (Your Takeaway)
+                CalmSurface(modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.padding(20.dp)) {
                         Text(
-                            text = "✨ A Moment to Keep",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = baseMoodColor, // Dynamic title color
+                            text = "Your Takeaway",
+                            fontSize = 14.sp,
+                            color = Color(0xFF6B7280),
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
                         Text(
-                            text = highlight,
+                            text = if (entry.ai.journal.isNotBlank()) entry.ai.journal else "No details added.",
                             fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = Color(0xFF1F2937), // Dark gray vs mood colors
+                            color = Color(0xFF374151),
                             lineHeight = 24.sp
                         )
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
-            }
 
-            // 4. Highlight Box -> Full Gentle Advice (Daily Advice)
-             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(Color(0xFFFFF7ED)) // Light Beige/Orange
-                    .padding(20.dp)
-            ) {
-                Column {
-                   Text(
-                        text = "Daily Advice",
-                        fontSize = 14.sp,
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // 3b. Highlight (Positive Moods)
+                entry.highlight?.let { highlight ->
+                    val baseMoodColor = getMoodColor(entry.normalizedMood)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(baseMoodColor.copy(alpha = 0.1f)) // Dynamic tinted background
+                            .padding(20.dp)
+                    ) {
+                        Column {
+                            Text(
+                                text = "✨ A Moment to Keep",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = baseMoodColor, // Dynamic title color
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+                            Text(
+                                text = highlight,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color(0xFF1F2937), // Dark gray vs mood colors
+                                lineHeight = 24.sp
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+
+                // 4. Highlight Box -> Full Gentle Advice (Daily Advice)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(Color(0xFFFFF7ED)) // Light Beige/Orange
+                        .padding(20.dp)
+                ) {
+                    Column {
+                        Text(
+                            text = "Daily Advice",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF9a3412),
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        Text(
+                            text = entry.ai.advice, // FULL ADVICE
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = Color(0xFF92400E),
+                            lineHeight = 24.sp
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // 5. Emotional Spectrum Heading
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Emotional Spectrum",
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF9a3412),
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        color = Color(0xFF1F2937)
                     )
                     Text(
-                        text = entry.ai.advice, // FULL ADVICE
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color(0xFF92400E),
-                        lineHeight = 24.sp
+                        text = formatMoodName(entry.normalizedMood),
+                        fontSize = 14.sp,
+                        color = Color(0xFF6B7280)
                     )
                 }
-            }
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            // 5. Emotional Spectrum Heading
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Emotional Spectrum",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1F2937)
+                // 5b. Spectrum Sliders (Using EmotionalSpectrum from Screen 3)
+                // Emotional Tone
+                EmotionalSpectrum(
+                    label = "Emotional tone",
+                    leftLabel = "Difficult",
+                    rightLabel = "Positive",
+                    position = entry.ai.emotion.positivity,
+                    gradient = Brush.horizontalGradient(
+                        listOf(
+                            Color(0xFF9CA3AF).copy(alpha = 0.3f),
+                            Color(0xFF10B981).copy(alpha = 0.3f)
+                        )
+                    ),
+                    markerColor = Color(0xFF10B981),
+                    isVisible = true
                 )
-                Text(
-                    text = formatMoodName(entry.normalizedMood),
-                    fontSize = 14.sp,
-                    color = Color(0xFF6B7280)
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Energy
+                EmotionalSpectrum(
+                    label = "Energy level",
+                    leftLabel = "Resting",
+                    rightLabel = "Energized",
+                    position = entry.ai.emotion.energy,
+                    gradient = Brush.horizontalGradient(
+                        listOf(
+                            Color(0xFFA78BFA).copy(alpha = 0.3f), // Using colors from MoodDetail/Screen3
+                            Color(0xFFF59E0B).copy(alpha = 0.3f)
+                        )
+                    ),
+                    markerColor = Color(0xFFF59E0B),
+                    isVisible = true
                 )
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Inner State
+                EmotionalSpectrum(
+                    label = "Inner state",
+                    leftLabel = "At ease",
+                    rightLabel = "Tense",
+                    position = entry.ai.emotion.stress,
+                    gradient = Brush.horizontalGradient(
+                        listOf(
+                            Color(0xFF10B981).copy(alpha = 0.3f),
+                            Color(0xFFF97316).copy(alpha = 0.3f)
+                        )
+                    ),
+                    markerColor = if (entry.ai.emotion.stress > 0.6f) Color(0xFFF97316) else Color(
+                        0xFF10B981
+                    ),
+                    isVisible = true
+                )
+
+                Spacer(modifier = Modifier.height(48.dp))
             }
-            
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // 5b. Spectrum Sliders (Using EmotionalSpectrum from Screen 3)
-            // Emotional Tone
-            EmotionalSpectrum(
-                label = "Emotional tone",
-                leftLabel = "Difficult",
-                rightLabel = "Positive",
-                position = entry.ai.emotion.positivity,
-                gradient = Brush.horizontalGradient(
-                    listOf(
-                        Color(0xFF9CA3AF).copy(alpha = 0.3f),
-                        Color(0xFF10B981).copy(alpha = 0.3f)
-                    )
-                ),
-                markerColor = Color(0xFF10B981),
-                isVisible = true
-            )
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            // Energy
-            EmotionalSpectrum(
-                label = "Energy level",
-                leftLabel = "Resting",
-                rightLabel = "Energized",
-                position = entry.ai.emotion.energy,
-                gradient = Brush.horizontalGradient(
-                    listOf(
-                        Color(0xFFA78BFA).copy(alpha = 0.3f), // Using colors from MoodDetail/Screen3
-                        Color(0xFFF59E0B).copy(alpha = 0.3f)
-                    )
-                ),
-                markerColor = Color(0xFFF59E0B),
-                isVisible = true
-            )
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            // Inner State
-            EmotionalSpectrum(
-                label = "Inner state",
-                leftLabel = "At ease",
-                rightLabel = "Tense",
-                position = entry.ai.emotion.stress,
-                gradient = Brush.horizontalGradient(
-                    listOf(
-                        Color(0xFF10B981).copy(alpha = 0.3f),
-                        Color(0xFFF97316).copy(alpha = 0.3f)
-                    )
-                ),
-                markerColor = if (entry.ai.emotion.stress > 0.6f) Color(0xFFF97316) else Color(0xFF10B981),
-                isVisible = true
-            )
-
-            Spacer(modifier = Modifier.height(48.dp))
         }
     }
 }

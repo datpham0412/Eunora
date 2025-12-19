@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -236,7 +237,7 @@ fun MoodCard(emoji: String, label: String, date: String) {
     Surface(
         shape = RoundedCornerShape(24.dp),
         color = Color.White,
-        modifier = Modifier.width(100.dp).height(120.dp),
+        modifier = Modifier.width(100.dp).height(140.dp),
         shadowElevation = 0.dp // Flat style as per mockup
     ) {
         Column(
@@ -259,7 +260,10 @@ fun MoodCard(emoji: String, label: String, date: String) {
                 style = MaterialTheme.typography.labelMedium.copy(
                     fontWeight = FontWeight.SemiBold,
                     color = Color(0xFF134E4A)
-                )
+                ),
+                textAlign = TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = date,

@@ -121,7 +121,7 @@ fun MoodInputScreen(
                             decorationBox = { innerTextField ->
                                 if (userInput.isEmpty()) {
                                     Text(
-                                        text = "Write about your mood,\nthoughts, or feelings...",
+                                        text = "Write about your mood, thoughts, or feelings...",
                                         style = TextStyle(
                                             fontSize = 18.sp,
                                             lineHeight = 28.sp,
@@ -262,7 +262,7 @@ fun MoodItemButton(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.width(56.dp)
+        modifier = Modifier.widthIn(min = 56.dp)
     ) {
         Surface(
             shape = RoundedCornerShape(16.dp),
