@@ -43,45 +43,32 @@ fun MoodHistoryScreen(
 ) {
     val state by viewModel.state.collectAsState()
     
-    // Theme Colors (Matching Mockup)
-    val BackgroundColor = Color(0xFFE2F4F2) // Light Mint
-    val PrimaryText = Color(0xFF134E4A) // Dark Teal
+    val BackgroundColor = Color(0xFFE2F4F2)
+    val PrimaryText = Color(0xFF134E4A)
     val SecondaryText = Color(0xFF134E4A).copy(alpha = 0.7f)
-    val AccentColor = Color(0xFF2D8A7F)
-    val CardColor = Color.White
-    
+
     Scaffold(
         containerColor = BackgroundColor,
         contentColor = PrimaryText
     ) { padding ->
         
 
-        // Handle Back (System)
         BackHandler(onBack = onBackClick)
-
-        // Handle Back (System/Swipe)
-         // Native-style Back Button (Top Left)
-         // We place it in the Box below to layer correctly or strictly here?
-         // Let's rely on Box approach for consistency with Input Screen.
 
         Box(modifier = Modifier.fillMaxSize().padding(padding)) {
             Column(
                 modifier = Modifier.fillMaxSize()
             ) {
-                // Header Space for Back Button
                 Spacer(modifier = Modifier.height(16.dp))
                 
-                // Adaptive Back Button
                 AdaptiveBackButton(onClick = onBackClick, modifier = Modifier.padding(start = 8.dp))
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Scrollable Content
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(horizontal = 24.dp, vertical = 8.dp)
                 ) {
-                    // Header Item
                     item {
                         Column {
                             Text(
@@ -101,7 +88,6 @@ fun MoodHistoryScreen(
                         }
                     }
 
-                    // Stats Row
                     item {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -113,13 +99,13 @@ fun MoodHistoryScreen(
                                 modifier = Modifier.weight(1f)
                             )
                             StatsCard(
-                                value = state.averageMood, // Using N/A or computed
+                                value = state.averageMood,
                                 label = "Avg Mood",
                                 modifier = Modifier.weight(1f)
                             )
                             StatsCard(
                                 value = state.mostCommonMood,
-                                label = "Most Common", // Emoji
+                                label = "Most Common",
                                 modifier = Modifier.weight(1f),
                                 isEmoji = true
                             )
@@ -127,7 +113,6 @@ fun MoodHistoryScreen(
                         Spacer(modifier = Modifier.height(32.dp))
                     }
 
-                    // Timeline Header & Filters
                     item {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -141,7 +126,6 @@ fun MoodHistoryScreen(
                             )
                             Spacer(modifier = Modifier.width(16.dp))
                             
-                            // Filter Chips
                             LazyRow(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
@@ -157,13 +141,7 @@ fun MoodHistoryScreen(
                         Spacer(modifier = Modifier.height(16.dp))
                     }
 
-                    // Grouped List
                     state.groupedFilteredEntries.forEach { (dateHeader, entries) ->
-                        // Date Header (optional if we want headers like "Today")
-                        // Mockup shows just timeline list. But date grouping helps context.
-                        // I'll show a small header if it's not "Timeline"
-                        // Or just flatten the list? The ViewModel provides grouped map. I'll iterate.
-                        
                         item {
                             Text(
                                 text = dateHeader,
@@ -190,7 +168,6 @@ fun MoodHistoryScreen(
                 }
             }
             
-            // Edge Swipe (iOS)
             EdgeSwipeBackHandler(onBack = onBackClick)
         }
     }
@@ -239,7 +216,7 @@ fun FilterChipItem(
     onClick: () -> Unit
 ) {
     Surface(
-        color = if (isSelected) Color(0xFFB2DFDB) else Color.Transparent, // Light Teal if selected
+        color = if (isSelected) Color(0xFFB2DFDB) else Color.Transparent,
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier
             .clip(RoundedCornerShape(16.dp))
@@ -257,7 +234,6 @@ fun FilterChipItem(
 
 @Composable
 fun MoodHistoryCard(entry: MoodEntry, onClick: () -> Unit) {
-    // Custom Chevron Right Vector
     val ChevronRightIcon = remember {
         ImageVector.Builder(
             name = "ChevronRight",
@@ -292,7 +268,7 @@ fun MoodHistoryCard(entry: MoodEntry, onClick: () -> Unit) {
         color = Color.White,
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp) // increased height for spectrum
+            .height(100.dp)
             .clip(RoundedCornerShape(20.dp))
             .clickable { onClick() },
         shadowElevation = 0.dp
@@ -303,7 +279,6 @@ fun MoodHistoryCard(entry: MoodEntry, onClick: () -> Unit) {
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Emoji Circle
             Box(
                 modifier = Modifier
                     .size(48.dp)
@@ -316,7 +291,6 @@ fun MoodHistoryCard(entry: MoodEntry, onClick: () -> Unit) {
             
             Spacer(modifier = Modifier.width(16.dp))
             
-            // Text Content
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.Center
@@ -335,7 +309,6 @@ fun MoodHistoryCard(entry: MoodEntry, onClick: () -> Unit) {
                     overflow = TextOverflow.Ellipsis
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                // Mini spectrum visualization
                 MiniEmotionalSpectrum(
                     positivity = entry.ai.emotion.positivity,
                     energy = entry.ai.emotion.energy,
@@ -345,7 +318,6 @@ fun MoodHistoryCard(entry: MoodEntry, onClick: () -> Unit) {
             
             Spacer(modifier = Modifier.width(8.dp))
             
-            // Chevron
             Icon(
                 imageVector = ChevronRightIcon,
                 contentDescription = null,

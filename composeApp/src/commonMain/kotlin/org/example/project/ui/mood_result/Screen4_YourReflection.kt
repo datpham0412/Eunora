@@ -58,10 +58,8 @@ fun Screen4_YourReflection(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Abstract background
         MoodAbstractBackground(mood)
 
-        // Centered content with container
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -85,7 +83,6 @@ fun Screen4_YourReflection(
                             .padding(40.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        // Animated title with icon
                         AnimatedVisibility(
                             visible = showTitle,
                             enter = slideInVertically(
@@ -113,7 +110,6 @@ fun Screen4_YourReflection(
                             }
                         }
 
-                        // Journal content with typing animation and scroll indicator
                         val scrollState = rememberScrollState()
                         val canScrollDown by remember {
                             derivedStateOf {
@@ -141,7 +137,6 @@ fun Screen4_YourReflection(
                                     )
                                 }
 
-                                // Scroll indicator gradient at bottom
                                 if (canScrollDown) {
                                     Box(
                                         modifier = Modifier

@@ -44,7 +44,6 @@ fun Screen2_MoodMeaning(
     var showMoodName by remember { mutableStateOf(false) }
     var showSummary by remember { mutableStateOf(false) }
 
-    // Gentle floating animation for emoji
     val infiniteTransition = rememberInfiniteTransition()
     val emojiFloat by infiniteTransition.animateFloat(
         initialValue = 0f,
@@ -71,10 +70,7 @@ fun Screen2_MoodMeaning(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Abstract background
         MoodAbstractBackground(mood)
-
-        // Centered content with calm surface container
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -91,7 +87,6 @@ fun Screen2_MoodMeaning(
                         .padding(40.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Animated emoji with floating effect
                     AnimatedVisibility(
                         visible = showEmoji,
                         enter = scaleIn(
@@ -112,8 +107,6 @@ fun Screen2_MoodMeaning(
                                 }
                         )
                     }
-
-                    // Mood name with slide up animation
                     AnimatedVisibility(
                         visible = showMoodName,
                         enter = slideInVertically(
@@ -122,11 +115,10 @@ fun Screen2_MoodMeaning(
                         ) + fadeIn(animationSpec = tween(600))
                     ) {
                         val formattedName = formatMoodName(mood)
-                        // Adjust font size for longer mood names
                         val fontSize = when {
-                            formattedName.length > 15 -> 26.sp  // "Happy Energetic" (15 chars)
-                            formattedName.length > 12 -> 28.sp  // "Overwhelmed" (11 chars)
-                            else -> 32.sp                        // Normal size
+                            formattedName.length > 15 -> 26.sp
+                            formattedName.length > 12 -> 28.sp
+                            else -> 32.sp
                         }
 
                         Text(
@@ -140,8 +132,6 @@ fun Screen2_MoodMeaning(
                             softWrap = false
                         )
                     }
-
-                    // Reflective summary with typing animation and scroll
                     val scrollState = rememberScrollState()
                     val canScrollDown by remember {
                         derivedStateOf {
@@ -169,7 +159,6 @@ fun Screen2_MoodMeaning(
                                 )
                             }
                             
-                            // Scroll indicator gradient at bottom
                             if (canScrollDown) {
                                 Box(
                                     modifier = Modifier

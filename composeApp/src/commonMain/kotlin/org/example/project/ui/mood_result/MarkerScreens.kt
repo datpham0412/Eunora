@@ -60,10 +60,7 @@ fun PauseMarker(
             .fillMaxSize()
             .background(backgroundColor)
     ) {
-        // Abstract background matching mood theme
         MoodAbstractBackground(mood)
-
-        // Centered content with entrance animation
         AnimatedVisibility(
             visible = showContainer,
             enter = fadeIn(animationSpec = tween(600, easing = FastOutSlowInEasing)) +
@@ -144,10 +141,7 @@ fun PermissionMarker(
             .fillMaxSize()
             .background(backgroundColor)
     ) {
-        // Abstract background matching mood theme
         MoodAbstractBackground(mood)
-
-        // Centered content with entrance animation
         AnimatedVisibility(
             visible = showContainer,
             enter = fadeIn(animationSpec = tween(600, easing = FastOutSlowInEasing)) +
@@ -168,7 +162,6 @@ fun PermissionMarker(
                         verticalArrangement = Arrangement.spacedBy(24.dp),
                         modifier = Modifier.padding(40.dp)
                     ) {
-                        // Title
                         AnimatedVisibility(
                             visible = showTitle,
                             enter = fadeIn(animationSpec = tween(500))
@@ -182,7 +175,6 @@ fun PermissionMarker(
                             )
                         }
 
-                        // Subline
                         AnimatedVisibility(
                             visible = showSubline,
                             enter = fadeIn(animationSpec = tween(500))
@@ -197,7 +189,6 @@ fun PermissionMarker(
                             )
                         }
 
-                        // Buttons
                         AnimatedVisibility(
                             visible = showButtons,
                             enter = fadeIn(animationSpec = tween(500))
@@ -206,7 +197,6 @@ fun PermissionMarker(
                                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                // End button
                                 Button(
                                     onClick = onEnd,
                                     modifier = Modifier
@@ -234,7 +224,6 @@ fun PermissionMarker(
                                     }
                                 }
 
-                                // Continue button
                                 Button(
                                     onClick = onContinue,
                                     modifier = Modifier
@@ -305,16 +294,12 @@ fun HighlightMarker(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onTap = {
-                        // Dismiss keyboard when tapping outside
                         focusManager.clearFocus()
                     }
                 )
             }
     ) {
-        // Abstract background matching mood theme
         MoodAbstractBackground(mood)
-
-        // Centered content with entrance animation
         AnimatedVisibility(
             visible = showContainer,
             enter = fadeIn(animationSpec = tween(600, easing = FastOutSlowInEasing)) +
@@ -337,7 +322,6 @@ fun HighlightMarker(
                         verticalArrangement = Arrangement.spacedBy(24.dp),
                         modifier = Modifier.padding(40.dp)
                     ) {
-                        // Prompt text (standard color)
                         AnimatedVisibility(
                             visible = showPrompt,
                             enter = fadeIn(animationSpec = tween(500))
@@ -346,12 +330,11 @@ fun HighlightMarker(
                                 text = "What's one small moment you'd like to keep?",
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight.Medium,
-                                color = Color(0xFF1F2937), // Standard text color
+                                color = Color(0xFF1F2937),
                                 textAlign = TextAlign.Center
                             )
                         }
 
-                        // Text input
                         AnimatedVisibility(
                             visible = showInput,
                             enter = fadeIn(animationSpec = tween(500))
@@ -368,7 +351,7 @@ fun HighlightMarker(
                                     },
                                 textStyle = TextStyle(
                                     fontSize = 18.sp,
-                                    color = Color(0xFF1F2937), // Standard text color
+                                    color = Color(0xFF1F2937),
                                     textAlign = TextAlign.Center
                                 ),
                                 cursorBrush = SolidColor(baseColor),
@@ -377,12 +360,11 @@ fun HighlightMarker(
                                         modifier = Modifier.fillMaxWidth(),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        // Show placeholder only when not focused and empty
                                         if (inputText.isEmpty() && !isFocused) {
                                             Text(
                                                 text = "A word, a feeling, or a moment",
                                                 fontSize = 18.sp,
-                                                color = Color(0xFF9CA3AF), // Standard placeholder color
+                                                color = Color(0xFF9CA3AF),
                                                 textAlign = TextAlign.Center
                                             )
                                         }
@@ -391,8 +373,6 @@ fun HighlightMarker(
                                 }
                             )
                         }
-
-                        // Continue button - only show when user has typed something
                         AnimatedVisibility(
                             visible = inputText.isNotEmpty(),
                             enter = fadeIn(animationSpec = tween(500))

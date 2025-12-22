@@ -14,7 +14,6 @@ class AIService(private val apiKey: String) {
             println("⚠️ API call failed: ${e.message}")
             println("🔄 Using fallback offline mode")
 
-            // Use fallback mock data when API fails
             generateFallbackMood(rawText, e)
         }
     }

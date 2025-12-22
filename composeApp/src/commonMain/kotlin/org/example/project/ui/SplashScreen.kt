@@ -22,7 +22,6 @@ import kotlinx.coroutines.delay
 fun SplashScreen(
     onSplashFinished: () -> Unit
 ) {
-    // Delay for splash effect (e.g., 2 seconds)
     LaunchedEffect(Unit) {
         delay(2000)
         onSplashFinished()
@@ -31,35 +30,29 @@ fun SplashScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White), // Fallback
+            .background(Color.White),
         contentAlignment = Alignment.Center
     ) {
-        // 1. Wavy Background
         WavyGradientBackground()
 
-        // 2. Logo and Text Content
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Simplified Logo (Abstract flower shape using Canvas or basic shapes if no SVG)
-            // For now, let's use a Custom drawn logo to match "flower/leaves"
             EunoraLogo(modifier = Modifier.size(120.dp))
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Title "Eunora"
             Text(
                 text = "Eunora",
                 fontSize = 56.sp,
-                fontWeight = FontWeight.Normal, // Serif usually looks better lighter or bold depending
+                fontWeight = FontWeight.Normal,
                 fontFamily = FontFamily.Serif,
-                color = Color(0xFF134E4A) // Dark Teal
+                color = Color(0xFF134E4A)
             )
             
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Subtitle
             Text(
                 text = "Let your\nfeelings breathe.",
                 fontSize = 20.sp,
@@ -70,7 +63,6 @@ fun SplashScreen(
             )
         }
 
-        // 3. Loading Indicator (Dots) at bottom
         Row(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -94,22 +86,15 @@ fun WavyGradientBackground() {
         val width = size.width
         val height = size.height
 
-        // Define colors based on the image (Green/Teal to Orange/Peach)
-        // We will draw multiple wavy layers to simulate the fluid design
-        
-        // Base layer (Light Green/Teal)
         drawRect(
             brush = Brush.verticalGradient(
                 colors = listOf(
-                    Color(0xFF80CBC4), // Teal 200
-                    Color(0xFFFFCC80)  // Orange 200
+                    Color(0xFF80CBC4),
+                    Color(0xFFFFCC80)
                 )
             )
         )
 
-        // Overlay Waves (Simulated)
-        // Ideally we use Path with CubicTo for smooth curves.
-        
         val path1 = Path().apply {
             moveTo(0f, height * 0.3f)
             cubicTo(
@@ -121,7 +106,7 @@ fun WavyGradientBackground() {
             lineTo(0f, 0f)
             close()
         }
-        drawPath(path1, color = Color(0xFF4DB6AC).copy(alpha = 0.3f)) // Darker teal wave top left
+        drawPath(path1, color = Color(0xFF4DB6AC).copy(alpha = 0.3f))
 
         val path2 = Path().apply {
             moveTo(0f, height)
@@ -133,9 +118,8 @@ fun WavyGradientBackground() {
             lineTo(width, height)
             close()
         }
-        drawPath(path2, color = Color(0xFFFFB74D).copy(alpha = 0.3f)) // Orange wave bottom right
+        drawPath(path2, color = Color(0xFFFFB74D).copy(alpha = 0.3f))
         
-        // More subtle wave
         val path3 = Path().apply {
             moveTo(0f, 0f)
             lineTo(width, 0f)
@@ -147,21 +131,15 @@ fun WavyGradientBackground() {
             )
             close()
         }
-        // This logic is tricky to get exact "Eunora" waves without SVG.
-        // A simple diagonal gradient + noise might be safer if path is too complex.
-        // Let's stick to the Vertical Gradient as base and one or two big simple curves.
-        
     }
 }
 
 @Composable
 fun EunoraLogo(modifier: Modifier = Modifier) {
-    // Abstract leaf logo in Teal and Orange
     Canvas(modifier = modifier) {
         val w = size.width
         val h = size.height
         
-        // Teal Leaf (Left)
         drawPath(
             path = Path().apply {
                 moveTo(w * 0.5f, h * 0.8f) // Base
@@ -171,7 +149,6 @@ fun EunoraLogo(modifier: Modifier = Modifier) {
             color = Color(0xFF26A69A)
         )
         
-        // Top Leaf (Teal)
         drawPath(
             path = Path().apply {
                 moveTo(w * 0.5f, h * 0.8f) 
@@ -181,7 +158,6 @@ fun EunoraLogo(modifier: Modifier = Modifier) {
             color = Color(0xFF4DB6AC)
         )
         
-        // Orange Leaf (Right)
         drawPath(
             path = Path().apply {
                 moveTo(w * 0.5f, h * 0.8f) 

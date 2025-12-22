@@ -48,7 +48,6 @@ fun Screen5_GentleGuidance(
     var showContent by remember { mutableStateOf(false) }
     var showButton by remember { mutableStateOf(false) }
 
-    // Subtle pulse animation for the button
     val infiniteTransition = rememberInfiniteTransition()
     val buttonScale by infiniteTransition.animateFloat(
         initialValue = 1f,
@@ -78,10 +77,8 @@ fun Screen5_GentleGuidance(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Abstract background
         MoodAbstractBackground(mood)
 
-        // Centered content
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -90,7 +87,6 @@ fun Screen5_GentleGuidance(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Animated advice section with container
             AnimatedVisibility(
                 visible = showContainer,
                 enter = scaleIn(
@@ -107,7 +103,6 @@ fun Screen5_GentleGuidance(
                             .padding(40.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        // Animated title with icon
                         AnimatedVisibility(
                             visible = showTitle,
                             enter = slideInVertically(
@@ -135,7 +130,6 @@ fun Screen5_GentleGuidance(
                             }
                         }
 
-                        // Advice with typing animation and scroll indicator
                         val scrollState = rememberScrollState()
                         val canScrollDown by remember {
                             derivedStateOf {
@@ -163,7 +157,6 @@ fun Screen5_GentleGuidance(
                                     )
                                 }
 
-                                // Scroll indicator gradient at bottom
                                 if (canScrollDown) {
                                     Box(
                                         modifier = Modifier
@@ -188,7 +181,6 @@ fun Screen5_GentleGuidance(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Animated CTA button with pulse effect
             AnimatedVisibility(
                 visible = showButton,
                 enter = slideInVertically(

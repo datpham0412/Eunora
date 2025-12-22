@@ -25,10 +25,8 @@ class MoodRepository(
     private val json = Json { prettyPrint = false }
 
     suspend fun analyzeMood(rawMoodText: String): MoodEntry {
-        // Call AI Service to interpret mood
         val aiResult = aiService.interpretMood(rawMoodText)
 
-        // Classify mood deterministically from emotion scores
         val normalizedMood = classifyMood(aiResult.emotion)
 
         val entry = MoodEntry(
@@ -38,12 +36,11 @@ class MoodRepository(
             ai = aiResult,
             art = MoodArtMetadata(
                 mood = normalizedMood,
-                assetId = null  // Will be assigned later from local asset library
+                assetId = null
             ),
             timestamp = currentTimeMillis()
         )
 
-        // Auto-save to database
         saveMoodEntry(entry)
 
         return entry

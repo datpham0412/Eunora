@@ -10,7 +10,7 @@ data class MoodEntry(
     val ai: MoodAIResult,
     val art: MoodArtMetadata,
     val timestamp: Long,
-    val highlight: String? = null  // Small moment captured from HIGHLIGHT MARKER
+    val highlight: String? = null
 )
 
 @Serializable

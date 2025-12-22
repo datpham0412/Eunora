@@ -27,17 +27,13 @@ fun WelcomeScreen(
     onMoodClick: (String) -> Unit = {},
     onViewHistory: () -> Unit = {}
 ) {
-    // Theme Colors
-    // Matching the user's uploaded image: #F7F9F2 / pale yellowish-green tint
-    val BackgroundColor = Color(0xFFF7F9F2) 
+    val BackgroundColor = Color(0xFFF7F9F2)
     val TextColor = Color(0xFF134E4A) // Dark Teal
     val SubTextColor = Color(0xFF134E4A).copy(alpha = 0.7f)
-    
-    // Gradient for the CTA button
     val ctaGradient = Brush.horizontalGradient(
         colors = listOf(
-            Color(0xFF2D8A7F), // Teal Green
-            Color(0xFF3B9E91)  // Lighter Teal
+            Color(0xFF2D8A7F),
+            Color(0xFF3B9E91)
         )
     )
 
@@ -79,7 +75,6 @@ fun WelcomeScreen(
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            // CTA Button
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -110,7 +105,6 @@ fun WelcomeScreen(
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            // Recent Moods
             Text(
                 text = "Recent Moods",
                 style = MaterialTheme.typography.headlineSmall.copy(
@@ -129,7 +123,6 @@ fun WelcomeScreen(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 if (state.recentMoods.isEmpty()) {
-                    // Placeholder if no history
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -150,7 +143,6 @@ fun WelcomeScreen(
                             onClick = { onMoodClick(item.id) }
                         )
                     }
-                    // Fill remaining space if less than 3
                      repeat(3 - state.recentMoods.size) {
                         Spacer(modifier = Modifier.width(100.dp))
                     }
@@ -159,10 +151,9 @@ fun WelcomeScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Stats Card
             Surface(
                 shape = RoundedCornerShape(24.dp),
-                color = Color(0xFFFFFBEB), // Very light yellow/beige
+                color = Color(0xFFFFFBEB),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Row(
@@ -174,7 +165,6 @@ fun WelcomeScreen(
                 ) {
                     StatItem(state.totalEntries.toString(), "Entries")
                     
-                    // Vertical Divider
                     Box(
                         modifier = Modifier
                             .width(1.dp)
@@ -207,15 +197,14 @@ fun WelcomeScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Bottom Actions Card (View History)
             Surface(
                 shape = RoundedCornerShape(24.dp),
                 color = Color.White,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(80.dp) // Fixed height for a nice button/card feel
+                    .height(80.dp)
                     .clip(RoundedCornerShape(24.dp))
-                    .clickable { onViewHistory() }, // Surface click handles ripple for whole container
+                    .clickable { onViewHistory() },
                 shadowElevation = 0.dp
             ) {
                 Box(
@@ -248,7 +237,7 @@ fun MoodCard(emoji: String, label: String, date: String, onClick: () -> Unit) {
             .height(140.dp)
             .clip(RoundedCornerShape(24.dp))
             .clickable { onClick() },
-        shadowElevation = 0.dp // Flat style as per mockup
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(12.dp),
@@ -259,7 +248,7 @@ fun MoodCard(emoji: String, label: String, date: String, onClick: () -> Unit) {
                 modifier = Modifier
                     .size(48.dp)
                     .clip(CircleShape)
-                    .background(Color(0xFFFFF7ED)), // Light orange bg for emoji
+                    .background(Color(0xFFFFF7ED)),
                 contentAlignment = Alignment.Center
             ) {
                 Text(emoji, fontSize = 24.sp)
@@ -304,4 +293,3 @@ fun StatItem(value: String, label: String) {
     }
 }
 
-// ActionRowItem removed as it is no longer used

@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 fun CircularBackButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    darkTheme: Boolean = false // If true, white icon on dark background, roughly
+    darkTheme: Boolean = false
 ) {
     val backgroundColor = if (darkTheme) Color.Black.copy(alpha = 0.3f) else Color.White
     val contentColor = if (darkTheme) Color.White else Color(0xFF1F2937)
@@ -39,7 +39,7 @@ fun CircularBackButton(
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             color = contentColor,
-            modifier = Modifier.padding(bottom = 4.dp) // Slight visual center adjustment for arrow char
+            modifier = Modifier.padding(bottom = 4.dp)
         )
     }
 }

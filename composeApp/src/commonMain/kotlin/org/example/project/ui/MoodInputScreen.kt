@@ -30,7 +30,7 @@ fun MoodInputScreen(
     isLoading: Boolean,
     error: String?,
     onInputChange: (String) -> Unit,
-    onMoodSelect: (String, String) -> Unit, // New callback for preset selection
+    onMoodSelect: (String, String) -> Unit,
     onAnalyze: () -> Unit,
     onClearError: () -> Unit,
     onHistoryClick: () -> Unit = {},
@@ -39,10 +39,10 @@ fun MoodInputScreen(
     val focusManager = LocalFocusManager.current
 
     // Theme Colors based on Mockup
-    val BackgroundColor = Color(0xFFE2F4F2) // Pale Mint Green
-    val PrimaryText = Color(0xFF11423D) // Dark Deep Teal
+    val BackgroundColor = Color(0xFFE2F4F2)
+    val PrimaryText = Color(0xFF11423D)
     val SecondaryText = Color(0xFF11423D).copy(alpha = 0.8f)
-    val ButtonColor = Color(0xFF3EA8A3) // Teal/Cyan Button
+    val ButtonColor = Color(0xFF3EA8A3)
     val CardColor = Color.White
     val MoodItemColor = Color.White
 
@@ -50,12 +50,9 @@ fun MoodInputScreen(
         containerColor = BackgroundColor,
         contentColor = PrimaryText
     ) { paddingValues ->
-        // Handle System Back Press (Android)
         BackHandler(enabled = true, onBack = onBack)
         
-        // Handle Swipe Back (iOS style)
         Box(modifier = Modifier.fillMaxSize()) {
-             // Main Content
              Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -71,7 +68,6 @@ fun MoodInputScreen(
             ) {
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // Title
                 Text(
                     text = "How are you feeling?",
                     style = MaterialTheme.typography.headlineMedium.copy(
@@ -84,7 +80,6 @@ fun MoodInputScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Subtitle
                 Text(
                     text = "Share your thoughts freely.\nThere's no right or wrong.",
                     style = MaterialTheme.typography.bodyLarge.copy(
@@ -97,7 +92,6 @@ fun MoodInputScreen(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // Input Card
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -115,7 +109,7 @@ fun MoodInputScreen(
                                 fontSize = 18.sp,
                                 lineHeight = 28.sp,
                                 fontWeight = FontWeight.Normal,
-                                color = Color(0xFF374151), // Dark Gray for input
+                                color = Color(0xFF374151),
                             ),
                             enabled = !isLoading,
                             decorationBox = { innerTextField ->
@@ -148,7 +142,6 @@ fun MoodInputScreen(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // Quick Mood Label
                 Text(
                     text = "Quick mood (optional):",
                     style = MaterialTheme.typography.titleMedium.copy(
@@ -162,7 +155,6 @@ fun MoodInputScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Custom Mood Selector Row
                 val moods = remember {
                     listOf(
                         MoodOption("🤩", "Excited", "I'm feeling excited and amazed!", "positivity: 76 percent\nenergy: 76 percent"),
@@ -195,7 +187,6 @@ fun MoodInputScreen(
 
                 Spacer(modifier = Modifier.height(40.dp))
 
-                // Continue Button
                 Button(
                     onClick = onAnalyze,
                     enabled = !isLoading && userInput.isNotBlank(),
@@ -237,10 +228,8 @@ fun MoodInputScreen(
                 Spacer(modifier = Modifier.height(32.dp))
             }
         
-            // Swipe Detector Surface (Invisible, left edge)
             EdgeSwipeBackHandler(onBack = onBack)
 
-            // Native-style Back Button (Top Left)
             AdaptiveBackButton(
                 onClick = onBack,
                 modifier = Modifier

@@ -59,21 +59,18 @@ class WelcomeViewModel(
                     } else {
                         val total = entries.size
                         
-                        // Avg Energy: 0.0 - 1.0 -> Scale to 10
                         val avgEnergyVal = entries.map { it.ai.emotion.energy }.average()
                         val avgEnergyStr = if (avgEnergyVal.isNaN()) "-" else {
-                            val rounded = kotlin.math.round(avgEnergyVal * 10 * 10) / 10.0 // Scale to 10 then round to 1 decimal place
+                            val rounded = kotlin.math.round(avgEnergyVal * 10 * 10) / 10.0
                             "$rounded"
                         }
 
-                        // Most Common Mood
                         val mostCommon = entries.groupingBy { it.normalizedMood }
                             .eachCount()
                             .maxByOrNull { it.value }
                             ?.key
                         val commonEmoji = if (mostCommon != null) getMoodEmoji(mostCommon) else "😐"
 
-                        // Recent Moods (Last 3)
                         val recent = entries.sortedByDescending { it.timestamp }
                             .take(3)
                             .map { entry ->
@@ -109,8 +106,6 @@ class WelcomeViewModel(
     }
 
     private fun formatDate(timestamp: Long): String {
-        // Simple date formatting specific to the Mockup (e.g. "Apr 20")
-        // We can reuse the logic from MoodHistoryViewModel or simple approximation
         val daysSinceEpoch = (timestamp / (24 * 60 * 60 * 1000L)).toInt()
         val dayOfYear = daysSinceEpoch % 365
         
@@ -130,10 +125,6 @@ class WelcomeViewModel(
         
         val day = remainingDays + 1
         return "${monthNames.getOrNull(month) ?: "Jan"} $day"
-    }
-
-    fun onCleared() {
-        // cleanup if needed
     }
 
     private fun getMoodEmoji(mood: NormalizedMood): String {

@@ -3,10 +3,7 @@ package util
 expect fun currentTimeMillis(): Long
 
 fun formatDate(timestamp: Long): String {
-    // 1. Calculate total days since epoch (UTC)
     var days = (timestamp / 86400000L).toInt()
-
-    // 2. Iterate years starting from 1970
     var year = 1970
     while (true) {
         val daysInYear = if (isLeapYear(year)) 366 else 365
@@ -15,7 +12,6 @@ fun formatDate(timestamp: Long): String {
         year++
     }
 
-    // 3. Iterate months
     val monthDays = if (isLeapYear(year)) {
         listOf(31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
     } else {
@@ -36,7 +32,7 @@ fun formatDate(timestamp: Long): String {
         days -= monthDays[i]
     }
 
-    val day = days + 1 // days is 0-indexed remaining days in month
+    val day = days + 1
     val month = monthNames[monthIndex]
 
     return "$month $day, $year"

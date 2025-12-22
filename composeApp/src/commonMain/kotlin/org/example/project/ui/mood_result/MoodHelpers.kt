@@ -232,8 +232,8 @@ fun CalmSurface(
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(32.dp),
-        color = Color.White, // Pure white for consistent appearance
-        shadowElevation = 0.5.dp, // Very subtle ambient shadow
+        color = Color.White,
+        shadowElevation = 0.5.dp,
         tonalElevation = 0.dp
     ) {
         content()

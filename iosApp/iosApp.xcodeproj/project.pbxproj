@@ -7,18 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		66D2E4FD2EEF7812004B54D0 /* composeApp.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EC9A812EEC528F00FF00E9 /* composeApp.xcframework */; };
-		66D2E4FE2EEF7812004B54D0 /* composeApp.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 66EC9A812EEC528F00FF00E9 /* composeApp.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		667962232EFDF750006082F3 /* composeApp.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EC9A812EEC528F00FF00E9 /* composeApp.xcframework */; };
+		667962242EFDF750006082F3 /* composeApp.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 66EC9A812EEC528F00FF00E9 /* composeApp.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		66D2E4FF2EEF7812004B54D0 /* Embed Frameworks */ = {
+		667962252EFDF750006082F3 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				66D2E4FE2EEF7812004B54D0 /* composeApp.xcframework in Embed Frameworks */,
+				667962242EFDF750006082F3 /* composeApp.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -62,7 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				66D2E4FD2EEF7812004B54D0 /* composeApp.xcframework in Frameworks */,
+				667962232EFDF750006082F3 /* composeApp.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -124,7 +124,7 @@
 				E065EA9520EA1CAA90E5BFAA /* Sources */,
 				4A413EFB566D24C6B18AC042 /* Frameworks */,
 				F20655DCD4BBC1A1B79011FD /* Resources */,
-				66D2E4FF2EEF7812004B54D0 /* Embed Frameworks */,
+				667962252EFDF750006082F3 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -361,6 +361,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				OTHER_LDFLAGS = "-lsqlite3";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -389,6 +390,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				OTHER_LDFLAGS = "-lsqlite3";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

@@ -37,7 +37,6 @@ fun Screen6_Summary(
 
     val scrollState = rememberScrollState()
 
-    // Date formatting using centralized helper
     val date = formatDate(moodEntry.timestamp)
 
     Box(
@@ -53,7 +52,6 @@ fun Screen6_Summary(
                 .padding(top = 64.dp, bottom = 100.dp), // Increased top padding
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // 1. Mood Image
             val imageRes = when (moodEntry.normalizedMood) {
                 NormalizedMood.CALM_POSITIVE -> Res.drawable.mood_calm_positive
                 NormalizedMood.HAPPY_ENERGETIC -> Res.drawable.mood_happy_energetic
@@ -81,7 +79,6 @@ fun Screen6_Summary(
                         contentScale = ContentScale.Crop
                     )
                 } else {
-                    // Fallback: Abstract Wave or Emoji
                     MoodAbstractBackground(moodEntry.normalizedMood)
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text(getMoodEmoji(moodEntry.normalizedMood), fontSize = 64.sp)
@@ -91,7 +88,6 @@ fun Screen6_Summary(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // 2. Header Row: "Your Reflection" + Date
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -112,7 +108,6 @@ fun Screen6_Summary(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 3. User Journal (Your Takeaway)
             CalmSurface(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(20.dp)) {
                     Text(
@@ -132,7 +127,6 @@ fun Screen6_Summary(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 3b. Highlight (Positive Moods)
             moodEntry.highlight?.let { highlight ->
                 val baseMoodColor = getMoodColor(moodEntry.normalizedMood)
                 Box(
@@ -154,7 +148,7 @@ fun Screen6_Summary(
                             text = highlight,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium,
-                            color = Color(0xFF1F2937), // Dark gray for safe readability vs mood colors
+                            color = Color(0xFF1F2937),
                             lineHeight = 24.sp
                         )
                     }
@@ -162,14 +156,11 @@ fun Screen6_Summary(
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            // 4. Highlight Box -> Full Gentle Advice
-            // "yellow part should display full gentle advice"
-            // Using the same style (Beige box)
              Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(16.dp))
-                    .background(Color(0xFFFFF7ED)) // Light Beige/Orange
+                    .background(Color(0xFFFFF7ED))
                     .padding(20.dp)
             ) {
                 Column {
@@ -181,7 +172,7 @@ fun Screen6_Summary(
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
                     Text(
-                        text = moodEntry.ai.advice, // FULL ADVICE
+                        text = moodEntry.ai.advice,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color(0xFF92400E),
@@ -192,7 +183,6 @@ fun Screen6_Summary(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // 5. Emotional Spectrum Heading
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -212,8 +202,6 @@ fun Screen6_Summary(
             
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 5b. Spectrum Sliders (Using EmotionalSpectrum from Screen 3)
-            // Emotional Tone
             EmotionalSpectrum(
                 label = "Emotional tone",
                 leftLabel = "Difficult",
@@ -230,7 +218,6 @@ fun Screen6_Summary(
             )
             Spacer(modifier = Modifier.height(24.dp))
             
-            // Energy
             EmotionalSpectrum(
                 label = "Energy level",
                 leftLabel = "Resting",
@@ -238,7 +225,7 @@ fun Screen6_Summary(
                 position = moodEntry.ai.emotion.energy,
                 gradient = Brush.horizontalGradient(
                     listOf(
-                        Color(0xFFA78BFA).copy(alpha = 0.3f), // Using colors from MoodDetail/Screen3
+                        Color(0xFFA78BFA).copy(alpha = 0.3f),
                         Color(0xFFF59E0B).copy(alpha = 0.3f)
                     )
                 ),
@@ -247,7 +234,6 @@ fun Screen6_Summary(
             )
             Spacer(modifier = Modifier.height(24.dp))
             
-            // Inner State
             EmotionalSpectrum(
                 label = "Inner state",
                 leftLabel = "At ease",
@@ -265,7 +251,6 @@ fun Screen6_Summary(
 
             Spacer(modifier = Modifier.height(48.dp))
             
-            // Done Button (Moved here)
             Button(
                 onClick = onComplete,
                 modifier = Modifier
@@ -284,10 +269,6 @@ fun Screen6_Summary(
                     fontWeight = FontWeight.Bold
                 )
             }
-            
-            // Spacer to lift button above pagination dots (dots are usually ~64dp up)
-            // But if button is scrolled, it might be behind dots if at very bottom. 
-            // The padding(bottom=100.dp) on Column handles the scroll space.
         }
     }
 }

@@ -36,10 +36,7 @@ fun Screen3_EmotionalSpectrums(
     isVisible: Boolean = true
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        // Abstract background
         MoodAbstractBackground(mood)
-
-        // Centered content with container
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -54,7 +51,6 @@ fun Screen3_EmotionalSpectrums(
                     modifier = Modifier.padding(40.dp),
                     verticalArrangement = Arrangement.spacedBy(36.dp)
                 ) {
-                    // Heading (dark text for contrast)
                     Text(
                         text = "How you're feeling",
                         fontSize = 26.sp,
@@ -62,7 +58,6 @@ fun Screen3_EmotionalSpectrums(
                         color = Color(0xFF1F2937) // Near-black
                     )
 
-                    // Spectrum 1: Emotional tone
                     EmotionalSpectrum(
                         label = "Emotional tone",
                         leftLabel = "Difficult",
@@ -78,7 +73,6 @@ fun Screen3_EmotionalSpectrums(
                         isVisible = isVisible
                     )
 
-                    // Spectrum 2: Energy level
                     EmotionalSpectrum(
                         label = "Energy level",
                         leftLabel = "Resting",
@@ -94,7 +88,6 @@ fun Screen3_EmotionalSpectrums(
                         isVisible = isVisible
                     )
 
-                    // Spectrum 3: Inner state
                     EmotionalSpectrum(
                         label = "Inner state",
                         leftLabel = "At ease",
@@ -125,7 +118,6 @@ internal fun EmotionalSpectrum(
     markerColor: Color,
     isVisible: Boolean = true
 ) {
-    // Animate marker position from center (0.5) to actual position
     val animatedPosition by animateFloatAsState(
         targetValue = if (isVisible) position else 0.5f,
         animationSpec = tween(durationMillis = 1200),
@@ -135,16 +127,14 @@ internal fun EmotionalSpectrum(
     Column(
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        // Label (dark text for readability inside container)
         Text(
             text = label,
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
-            color = Color(0xFF334155), // Medium slate gray
+            color = Color(0xFF334155),
             letterSpacing = 0.5.sp
         )
 
-        // Spectrum bar
         BoxWithConstraints(
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -153,7 +143,6 @@ internal fun EmotionalSpectrum(
             val availableWidth = maxWidthPx - markerSize
             val markerOffset = availableWidth * animatedPosition.coerceIn(0f, 1f)
 
-            // Gradient bar
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -162,7 +151,6 @@ internal fun EmotionalSpectrum(
                     .background(gradient)
             )
 
-            // Marker
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterStart)
@@ -178,7 +166,6 @@ internal fun EmotionalSpectrum(
             )
         }
 
-        // End labels (medium gray for secondary text)
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -187,7 +174,7 @@ internal fun EmotionalSpectrum(
                 text = leftLabel,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Normal,
-                color = Color(0xFF64748B) // Lighter gray for secondary
+                color = Color(0xFF64748B)
             )
             Text(
                 text = rightLabel,

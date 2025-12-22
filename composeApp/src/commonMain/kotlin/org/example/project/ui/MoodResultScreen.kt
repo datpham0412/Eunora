@@ -38,15 +38,13 @@ fun MoodResultScreen(
     onNewMood: () -> Unit,
     onHistoryClick: () -> Unit = {},
     onHighlightCapture: (String, String?) -> Unit = { _, _ -> },
-    onBack: () -> Unit // Callback for system back button
+    onBack: () -> Unit
 ) {
-    // Handle System Back Button
     BackHandler(onBack = onBack)
 
     val backgroundColor = extractMoodBackgroundColor(moodEntry.normalizedMood)
     val moodGroup = moodEntry.normalizedMood.toMoodGroup()
 
-    // Build page flow based on mood group
     val pageFlow = remember(moodGroup) { buildPageFlow(moodGroup) }
 
     val pagerState = rememberPagerState(
@@ -56,7 +54,6 @@ fun MoodResultScreen(
 
     val coroutineScope = rememberCoroutineScope()
 
-    // Local state to track updates (like highlight) during the flow
     var currentEntry by remember(moodEntry) { mutableStateOf(moodEntry) }
 
     Box(
@@ -104,7 +101,7 @@ fun MoodResultScreen(
                         )
                         5 -> Screen6_Summary(
                             moodEntry = currentEntry,
-                            onComplete = onNewMood, // Final exit
+                            onComplete = onNewMood,
                             isVisible = pagerState.currentPage == page
                         )
                     }
@@ -134,9 +131,7 @@ fun MoodResultScreen(
                     HighlightMarker(
                         mood = currentEntry.normalizedMood,
                         onComplete = { input ->
-                            // Save highlight to database
                             onHighlightCapture(currentEntry.id, input)
-                            // Update local state so next screens see it
                             currentEntry = currentEntry.copy(highlight = input)
                             
                             coroutineScope.launch {
@@ -164,42 +159,42 @@ fun MoodResultScreen(
 private fun buildPageFlow(moodGroup: MoodGroup): List<PageType> {
     return when (moodGroup) {
         MoodGroup.HIGH_ACTIVATION -> listOf(
-            PageType.CoreScreen(0),  // Screen 1: Vibe
-            PageType.PauseMarker,    // PAUSE MARKER
-            PageType.CoreScreen(1),  // Screen 2: Mood Meaning
-            PageType.CoreScreen(2),  // Screen 3: Emotional Spectrums
-            PageType.CoreScreen(3),  // Screen 4: Your Reflection
-            PageType.CoreScreen(4),  // Screen 5: Gentle Guidance
-            PageType.CoreScreen(5)   // Screen 6: Summary
+            PageType.CoreScreen(0),
+            PageType.PauseMarker,
+            PageType.CoreScreen(1),
+            PageType.CoreScreen(2),
+            PageType.CoreScreen(3),
+            PageType.CoreScreen(4),
+            PageType.CoreScreen(5)
         )
 
         MoodGroup.LOW_ENERGY -> listOf(
-            PageType.CoreScreen(0),     // Screen 1: Vibe
-            PageType.CoreScreen(1),     // Screen 2: Mood Meaning
-            PageType.CoreScreen(2),     // Screen 3: Emotional Spectrums
-            PageType.PermissionMarker,  // PERMISSION MARKER
-            PageType.CoreScreen(3),     // Screen 4: Your Reflection
-            PageType.CoreScreen(4),     // Screen 5: Gentle Guidance
-            PageType.CoreScreen(5)      // Screen 6: Summary
+            PageType.CoreScreen(0),
+            PageType.CoreScreen(1),
+            PageType.CoreScreen(2),
+            PageType.PermissionMarker,
+            PageType.CoreScreen(3),
+            PageType.CoreScreen(4),
+            PageType.CoreScreen(5)
         )
 
         MoodGroup.POSITIVE -> listOf(
-            PageType.CoreScreen(0),  // Screen 1: Vibe
-            PageType.CoreScreen(1),  // Screen 2: Mood Meaning
-            PageType.CoreScreen(2),  // Screen 3: Emotional Spectrums
-            PageType.CoreScreen(3),  // Screen 4: Your Reflection
-            PageType.HighlightMarker,// HIGHLIGHT MARKER
-            PageType.CoreScreen(4),  // Screen 5: Gentle Guidance
-            PageType.CoreScreen(5)   // Screen 6: Summary
+            PageType.CoreScreen(0),
+            PageType.CoreScreen(1),
+            PageType.CoreScreen(2),
+            PageType.CoreScreen(3),
+            PageType.HighlightMarker,
+            PageType.CoreScreen(4),
+            PageType.CoreScreen(5)
         )
 
         MoodGroup.NEUTRAL -> listOf(
-            PageType.CoreScreen(0),  // Screen 1: Vibe
-            PageType.CoreScreen(1),  // Screen 2: Mood Meaning
-            PageType.CoreScreen(2),  // Screen 3: Emotional Spectrums
-            PageType.CoreScreen(3),  // Screen 4: Your Reflection
-            PageType.CoreScreen(4),  // Screen 5: Gentle Guidance
-            PageType.CoreScreen(5)   // Screen 6: Summary
+            PageType.CoreScreen(0),
+            PageType.CoreScreen(1),
+            PageType.CoreScreen(2),
+            PageType.CoreScreen(3),
+            PageType.CoreScreen(4),
+            PageType.CoreScreen(5)
         )
     }
 }
@@ -212,8 +207,8 @@ private fun isMarkerPage(pageType: PageType): Boolean {
     return when (pageType) {
         is PageType.CoreScreen -> false
         PageType.PauseMarker -> true
-        PageType.PermissionMarker -> false  // Allow swipe for PERMISSION MARKER
-        PageType.HighlightMarker -> false  // Allow swipe for HIGHLIGHT MARKER
+        PageType.PermissionMarker -> false
+        PageType.HighlightMarker -> false
     }
 }
 

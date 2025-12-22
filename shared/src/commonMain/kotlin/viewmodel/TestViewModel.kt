@@ -15,10 +15,6 @@ object TestViewModel {
                 println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
                 println("🧪 Testing ViewModel Architecture...")
                 println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-                // TODO: Update this test to use database
-                // val aiService = AIService(ApiConfig.GEMINI_API_KEY)
-                // val repository = MoodRepository(aiService, database)
-                // val viewModel = MoodViewModel(repository)
                 println("Test skipped - needs database instance")
                 // launch {
                 //     viewModel.state.collect { state ->

@@ -56,7 +56,6 @@ fun Screen1_VibeOnly(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Background with gentle breathing effect
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -68,7 +67,6 @@ fun Screen1_VibeOnly(
             MoodAbstractBackground(mood)
         }
 
-        // Main Content: Image + Text
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -92,7 +90,7 @@ fun Screen1_VibeOnly(
                         Image(
                             painter = painterResource(imageResource),
                             contentDescription = "Mood atmosphere",
-                            contentScale = ContentScale.Crop, // Fill the square card
+                            contentScale = ContentScale.Crop,
                             modifier = Modifier.fillMaxSize()
                         )
                     }
@@ -100,8 +98,6 @@ fun Screen1_VibeOnly(
             }
             
             Spacer(modifier = Modifier.height(48.dp))
-
-            // Animated mood name reveal
             AnimatedVisibility(
                 visible = showContent,
                 enter = fadeIn(
@@ -122,7 +118,6 @@ private fun MoodNameText(
     mood: NormalizedMood,
     modifier: Modifier = Modifier
 ) {
-    // Split mood name into words (e.g., "CALM_POSITIVE" -> ["calm", "positive"])
     val words = mood.name
         .split('_')
         .map { it.lowercase() }
@@ -135,15 +130,14 @@ private fun MoodNameText(
         verticalArrangement = Arrangement.Center
     ) {
         words.forEach { word ->
-            // Adjust font size for long words to prevent overflow
             val fontSize = when {
-                word.length > 10 -> 46.sp  // "overwhelmed" (11 chars)
-                word.length > 8 -> 52.sp   // "energetic" (9 chars)
-                else -> 58.sp              // Normal size
+                word.length > 10 -> 44.sp
+                word.length > 8 -> 52.sp
+                else -> 58.sp
             }
 
             val letterSpacing = when {
-                word.length > 10 -> 4.sp   // Reduce letter spacing for very long words
+                word.length > 10 -> 4.sp
                 word.length > 8 -> 5.sp
                 else -> 6.sp
             }

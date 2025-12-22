@@ -31,7 +31,6 @@ expect fun createMoodDatabase(context: Any): MoodDatabase
 fun App() {
     val context = getPlatformContext()
 
-    // Initialize database and repository
     val database = remember(context) { createMoodDatabase(context) }
 
     val repository = remember {
@@ -39,12 +38,10 @@ fun App() {
         MoodRepository(aiService, database)
     }
 
-    // Initialize main ViewModel
     val moodViewModel = remember {
         MoodViewModel(repository)
     }
 
-    // Initialize Welcome ViewModel
     val welcomeViewModel = remember {
         WelcomeViewModel(repository)
     }
@@ -52,7 +49,6 @@ fun App() {
 
     val uiState by moodViewModel.state.collectAsState()
 
-    // Navigation state
     var currentScreen by remember { mutableStateOf<Screen>(Screen.Splash) }
     var historyViewModel: MoodHistoryViewModel? by remember { mutableStateOf(null) }
     var detailViewModel: MoodDetailViewModel? by remember { mutableStateOf(null) }
@@ -93,9 +89,6 @@ fun App() {
                 }
 
                 is Screen.Input -> {
-                    
-                    // Basic BackHandler equivalent for Android (if we had the header, but since we modify commonMain UI)
-                    // We rely on the UI Back button added in the screen.
                     
                     MoodInputScreen(
                         userInput = uiState.userInput,
@@ -150,7 +143,7 @@ fun App() {
                             },
                             onBackClick = {
                                 historyViewModel = null
-                                currentScreen = Screen.Welcome // Go back to Welcome from History main
+                                currentScreen = Screen.Welcome
                             }
                         )
                     }
@@ -175,14 +168,12 @@ fun App() {
         }
     }
 
-    // Update screen when mood entry is created
     LaunchedEffect(uiState.currentMoodEntry) {
         if (uiState.currentMoodEntry != null) {
             currentScreen = Screen.Result(uiState.currentMoodEntry!!.id)
         }
     }
 
-    // Cleanup when composable leaves composition
     DisposableEffect(Unit) {
         onDispose {
             moodViewModel.onCleared()

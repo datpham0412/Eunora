@@ -152,8 +152,6 @@ class MoodHistoryViewModel(
             "$rounded"
         }
         
-        // Find most common emoji
-        // We need to map each entry to an emoji first
         val common = entries
             .groupingBy { getEmojiForMood(it.normalizedMood) }
             .eachCount()
@@ -184,7 +182,6 @@ class MoodHistoryViewModel(
         val todayStart = now - (now % oneDayMillis)
         val yesterdayStart = todayStart - oneDayMillis
         
-        // Sort by timestamp desc
         val sorted = entries.sortedByDescending { it.timestamp }
 
         return sorted.groupBy { entry ->

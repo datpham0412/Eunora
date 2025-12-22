@@ -19,11 +19,10 @@ fun EdgeSwipeBackHandler(
     if (isEnabled) {
         Box(
             modifier = Modifier
-                .width(24.dp) // Capture touches on left edge
+                .width(24.dp)
                 .fillMaxHeight()
                 .pointerInput(Unit) {
                     detectHorizontalDragGestures { change, dragAmount ->
-                        // Simple detection: if drag is positive (right)
                         if (dragAmount > 20) {
                             onBack()
                         }
