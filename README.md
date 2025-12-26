@@ -18,3 +18,14 @@ https://www.youtube.com/watch?v=_78pzntFU9I&t=19s
 |--------------|-----|---------|
 | Positive / Calm mood | ![iOS calm](screenshots/ios_calm.png) | ![Android calm](screenshots/android_calm.png) |
 | Intense / Overwhelmed mood | ![iOS intense](screenshots/ios_intense.png) | ![Android intense](screenshots/android_intense.png) |
+
+
+## Problem Statement
+
+Most mood-tracking apps focus on **recording emotions**, not responding to them.  
+Users log how they feel, but the experience remains the same regardless of emotional intensity or context.
+
+In reality, different emotional states require different kinds of support.  
+Positive moments may be worth preserving, intense emotions may need a pause, and low-energy moods may require rest rather than reflection.
+
+**Eunora focuses on how the app responds**, combining gentle guidance, personal reflection, and an adaptive flow to help users better understand themselves — not just track their mood.
