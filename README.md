@@ -1,4 +1,4 @@
-# Eunora — An adaptive mood reflection app
+# Eunora - An adaptive mood reflection app
 
 <p align="center">
   <img src="screenshots/logo.png" alt="Eunora logo" width="120" />
@@ -7,8 +7,6 @@
 Eunora is a mood reflection app where the experience adapts to emotional intensity, not just emotional labels.
 
 The app is built with Kotlin Multiplatform, sharing core logic and UI across Android and iOS.
-
-This project was created specifically for the Kotlin Multiplatform Contest 2025–2026.
 
 
 ## Demo
@@ -41,9 +39,9 @@ https://www.youtube.com/watch?v=_78pzntFU9I&t=19s
 
 ## Problem Statement
 
-Most mood-tracking apps focus on recording emotions, but treat all moods the same after they are logged.
+Most mood tracking apps focus on recording emotions, but treat all moods the same after they are logged.
 
-In reality, different emotional states require different kinds of support — from slowing down intense reactions, to resting during low-energy moments, or preserving positive experiences.
+In reality, different emotional states require different kinds of support: from slowing down intense reactions, to resting during low-energy moments, or preserving positive experiences.
 
 Without emotional context, mood tracking remains passive and limited.
 
@@ -71,7 +69,7 @@ This adaptation is supported by gentle guidance, personal reflection, emotion-co
 Most mood trackers focus on *what* is logged.  
 Eunora focuses on *how interaction happens*.
 
-By adapting pacing, tone, and flow to emotional state, Eunora becomes an emotionally responsive system — not just a mood log.
+By adapting pacing, tone, and flow to emotional state, Eunora becomes an emotionally responsive system, not just a mood log.
 
 ## User Flow Overview
 
@@ -160,6 +158,8 @@ The codebase is structured into three main layers:
 
 ## How to Run
 
+> This project is intended to be run using Android Studio (Android) and Xcode (iOS).
+
 ### Prerequisites
 
 -   **JDK 17** or higher
@@ -171,7 +171,11 @@ The codebase is structured into three main layers:
 
 ### 1. Setup & Configuration
 
-**Step 1: Get a Gemini API Key**
+**Step 1: Clone the Repository**
+```bash
+git clone https://github.com/datpham0412/eunora.git
+```
+**Step 2: Get a Gemini API Key**
 1.  Generate a key at [Google AI Studio](https://aistudio.google.com/).
 2.  Create a `.env` file at the project root:
     ```env
@@ -180,10 +184,7 @@ The codebase is structured into three main layers:
     > ⚠️ The API key is required to enable AI-powered emotion analysis.
 Without it, the app will still run, but AI features will be disabled.
 
-**Step 2: Clone the Repository**
-```bash
-git clone https://github.com/datpham0412/eunora.git
-```
+    > **Note**: The `ApiConfig` file is generated at build time. If you have added your key to `.env` but the app still doesn't recognize it, please try cleaning the project (Build -> Clean Project) and running it again to regenerate the configuration.
 
 ---
 
@@ -224,3 +225,6 @@ The codebase follows Kotlin’s official coding conventions, using consistent na
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+This project was created for the Kotlin Multiplatform Contest 2025–2026.
