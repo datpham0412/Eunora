@@ -115,6 +115,7 @@ The codebase is structured into three main layers:
 -   **Database**: [SQLDelight](https://cashapp.github.io/sqldelight/) (Type-safe database operations)
 -   **Asynchronous Processing**: [Kotlin Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
 -   **Lifecycle**: [Jetpack Lifecycle](https://developer.android.com/jetpack/androidx/releases/lifecycle) (ViewModel, Lifecycle-runtime)
+-   **AI Integration**: Third-party AI services [(Gemini 2.5 Flash Lite)](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/2-5-flash-lite) used for emotion interpretation and reflective guidance, with a fallback demo mode when AI is unavailable
 
 ### Platforms Supported
 -   **Android**: Min SDK 24, Target SDK 36
