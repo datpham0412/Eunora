@@ -1,8 +1,9 @@
+# Eunora — An adaptive mood reflection app
+
 <p align="center">
   <img src="screenshots/logo.png" alt="Eunora logo" width="120" />
 </p>
 
-# Eunora — An adaptive mood reflection app
 Eunora is a mood reflection app where the experience adapts to emotional intensity, not just emotional labels.
 
 The app is built with Kotlin Multiplatform, sharing core logic and UI across Android and iOS.
