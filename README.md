@@ -88,6 +88,9 @@ The project follows a **Kotlin Multiplatform (KMP)** architecture, maximizing co
 
 ### High-level Architecture
 
+![High-level KMP Architecture](screenshots/system.png)
+
+
 The codebase is structured into three main layers:
 
 -   **Shared Domain (`shared`)**: Contains the core business logic, domain models, data repositories, and ViewModels. This layer is platform-agnostic (pure Kotlin) and drives the application state.
