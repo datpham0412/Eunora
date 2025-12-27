@@ -14,10 +14,22 @@ https://www.youtube.com/watch?v=_78pzntFU9I&t=19s
 
 ## Screenshots
 
+### Adaptive Flow Examples
+
 | Adaptive Flow | iOS | Android |
 |--------------|-----|---------|
 | Positive / Calm mood | ![iOS calm](screenshots/ios_calm.png) | ![Android calm](screenshots/android_calm.png) |
 | Intense / Overwhelmed mood | ![iOS intense](screenshots/ios_intense.png) | ![Android intense](screenshots/android_intense.png) |
+
+---
+
+### Core Experience Screens
+
+| Screen | iOS | Android |
+|------|-----|---------|
+| Home & Mood Patterns | ![iOS home](screenshots/ios_home.png) | ![Android home](screenshots/android_home.png) |
+| Mood Input | ![iOS input](screenshots/ios_input.png) | ![Android input](screenshots/android_input.png) |
+| Reflection Summary | ![iOS summary](screenshots/ios_summary.png) | ![Android summary](screenshots/android_summary.png) |
 
 
 ## Problem Statement
