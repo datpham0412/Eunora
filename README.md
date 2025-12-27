@@ -81,3 +81,24 @@ By adapting pacing, tone, and flow to emotional state, Eunora becomes an emotion
         
 -   **History & recall**  
     Each entry is saved as a complete emotional moment and can be revisited from history at any time.
+
+## System Architecture
+
+The project follows a **Kotlin Multiplatform (KMP)** architecture, maximizing code sharing between Android and iOS while maintaining platform-native integration where necessary.
+
+### High-level Architecture
+
+The codebase is structured into three main layers:
+
+-   **Shared Domain (`shared`)**: Contains the core business logic, domain models, data repositories, and ViewModels. This layer is platform-agnostic (pure Kotlin) and drives the application state.
+-   **Shared UI (`composeApp`)**: Implements the user interface using **Compose Multiplatform**. This allows for a single declarative UI definition that renders natively on both Android and iOS.
+-   **Platform Specific**:
+    -   **Android App**: A thin wrapper around the shared Compose App.
+    -   **iOS App**: A thin wrapper that hosts the shared Compose View Controller.
+
+### Kotlin Multiplatform Usage
+
+-   **Shared Business Logic**: All application logic, including data fetching, AI analysis models, and local data persistence, resides in the `shared` module.
+-   **Shared State Management**: The app uses `StateFlow` for reactive state management. `ViewModel` classes (e.g., `WelcomeViewModel`) in the `shared` module expose UI state to the Compose UI.
+-   **ViewModel**: ViewModels are shared components located in the `shared` module, managing pure business logic and state, decoupled from the Android-specific ViewModel implementation where possible, or using multiplatform equivalents.
+-   **Shared Compose UI**: The entire screen hierarchy and navigation are implemented in `composeApp/src/commonMain/kotlin` using Jetpack Compose, ensuring a consistent experience across platforms.
