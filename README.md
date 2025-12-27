@@ -121,6 +121,24 @@ The codebase is structured into three main layers:
 -   **Android**: Min SDK 24, Target SDK 36
 -   **iOS**: Via Kotlin Native & Compose Multiplatform (UIKit)
 
+## Repository Structure
+
+```text
+├── composeApp/                # Shared Compose UI & Android Application
+│   ├── src/
+│   │   ├── androidMain/       # Android entry point & platform specific UI
+│   │   ├── commonMain/        # Shared Compose UI code (Screens, Components)
+│   │   └── iosMain/           # iOS specific UI bindings
+├── shared/                    # Shared Business Logic (Kotlin Multiplatform)
+│   ├── src/
+│   │   ├── androidMain/       # Android specific implementation (Drivers, etc.)
+│   │   ├── commonMain/        # Core Logic: AI, Database, Models, ViewModels, Repositories
+│   │   └── iosMain/           # iOS specific implementation
+├── iosApp/                    # Native iOS Application (Xcode Project)
+├── gradle/                    # Build configuration & version catalogs
+└── README.md                  # Project documentation
+```
+
 ## How to Run
 
 ### Prerequisites
