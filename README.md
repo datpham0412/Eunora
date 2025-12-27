@@ -4,6 +4,9 @@ Eunora is a mood reflection app where the experience adapts to emotional intensi
 
 The app is built with Kotlin Multiplatform, sharing core logic and UI across Android and iOS.
 
+This project was created specifically for the Kotlin Multiplatform Contest 2025–2026.
+
+
 ## Demo
 
 A short walkthrough demonstrating Eunora’s adaptive emotional flow across different mood inputs.
