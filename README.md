@@ -120,3 +120,62 @@ The codebase is structured into three main layers:
 ### Platforms Supported
 -   **Android**: Min SDK 24, Target SDK 36
 -   **iOS**: Via Kotlin Native & Compose Multiplatform (UIKit)
+
+## How to Run
+
+### Prerequisites
+
+-   **JDK 17** or higher
+-   **Android Studio** (latest stable) for Android development
+-   **Xcode 15+** (macOS only) for iOS development
+-   **Gemini API Key** (required for AI features)
+
+---
+
+### 1. Setup & Configuration
+
+**Step 1: Get a Gemini API Key**
+1.  Generate a key at [Google AI Studio](https://aistudio.google.com/).
+2.  Create a `.env` file at the project root:
+    ```env
+    GEMINI_API_KEY=your_api_key_here
+    ```
+    > ⚠️ The API key is required to enable AI-powered emotion analysis.
+Without it, the app will still run, but AI features will be disabled.
+
+**Step 2: Clone the Repository**
+```bash
+git clone https://github.com/datpham0412/eunora.git
+```
+
+---
+
+### 2. Run on Android
+
+1.  Open the project in **Android Studio**.
+2.  Allow Gradle to sync.
+3.  Select the **composeApp** run configuration and click **Run** ▶️.
+
+---
+
+### 3. Run on iOS
+
+Running on iOS requires generating the shared Compose framework first.
+> ⚠️ This is required because the shared Compose UI is packaged as an XCFramework for iOS.
+
+**Step 1: Generate Framework**
+Run the following Gradle command from the project root:
+```bash
+./gradlew :composeApp:assembleComposeAppReleaseXCFramework --no-configuration-cache
+```
+
+**Step 2: Configure Xcode**
+1.  Open `eunora/iosApp/iosApp.xcodeproj` in Xcode.
+2.  **Embed Framework**: In the **General** tab for the `iosApp` target, add the generated framework to **Frameworks, Libraries, and Embedded Content** with "Embed & Sign":
+    `composeApp/build/XCFrameworks/release/composeApp.xcframework`
+3.  **Link SQLite**: In **Build Settings** -> **Other Linker Flags**, add `-lsqlite3`.
+
+**Step 3: Run**
+Select a simulator or connected device and click **Run** ▶️.
+
+> **Note**: You must regenerate the XCFramework (`./gradlew ...`) whenever you modify code in the shared `composeApp` module.
