@@ -22,10 +22,62 @@ https://www.youtube.com/watch?v=_78pzntFU9I&t=19s
 
 ## Problem Statement
 
-Most mood-tracking apps focus on **recording emotions**, not responding to them.  
-Users log how they feel, but the experience remains the same regardless of emotional intensity or context.
+Most mood-tracking apps focus on recording emotions, but treat all moods the same after they are logged.
 
-In reality, different emotional states require different kinds of support.  
-Positive moments may be worth preserving, intense emotions may need a pause, and low-energy moods may require rest rather than reflection.
+In reality, different emotional states require different kinds of support — from slowing down intense reactions, to resting during low-energy moments, or preserving positive experiences.
 
-**Eunora focuses on how the app responds**, combining gentle guidance, personal reflection, and an adaptive flow to help users better understand themselves — not just track their mood.
+Without emotional context, mood tracking remains passive and limited.
+
+
+## Core Idea
+
+Eunora adapts its experience based on both **emotional type and activation level**.
+
+Instead of a single static flow, the app responds differently depending on how the user feels:
+
+-   **Positive emotions** → preserve and reflect
+    
+-   **High-activation emotions** → pause and slow down
+    
+-   **Low-energy emotions** → rest or continue gently
+    
+-   **Neutral states** → minimal, uninterrupted flow
+    
+
+This adaptation is supported by gentle guidance, personal reflection, emotion-consistent visuals, and long-term emotional patterns.
+
+
+## Why This Is Different
+
+Most mood trackers focus on *what* is logged.  
+Eunora focuses on *how interaction happens*.
+
+By adapting pacing, tone, and flow to emotional state, Eunora becomes an emotionally responsive system — not just a mood log.
+
+## User Flow Overview
+
+**High-level flow (experience sequence)**
+
+-   **Welcome & emotional context**  
+    Users begin on a calm overview showing recent moods and patterns, providing emotional continuity before starting a new entry.
+    
+-   **Mood input**  
+    Users express how they feel through free writing or a quick mood selection, without pressure to be precise or analytical.
+    
+-   **Emotional reflection sequence**  
+    After submission, Eunora reflects the moment through a progressive sequence:
+    
+    -   mood vibe & quick overview
+        
+    -   mood explanation
+        
+    -   emotional spectrum
+        
+    -   personal reflection
+        
+    -   gentle guidance
+        
+    -   overall summary
+        
+-   **History & recall**  
+    Each entry is saved as a complete emotional moment and can be revisited from history at any time.
