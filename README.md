@@ -209,3 +209,11 @@ Run the following Gradle command from the project root:
 Select a simulator or connected device and click **Run** ▶️.
 
 > **Note**: You must regenerate the XCFramework (`./gradlew ...`) whenever you modify code in the shared `composeApp` module.
+
+## Kotlin Coding Conventions
+
+The codebase follows Kotlin’s official coding conventions, using consistent naming and a clear, modular structure across shared and platform-specific code.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
