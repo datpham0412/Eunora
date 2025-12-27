@@ -105,3 +105,17 @@ The codebase is structured into three main layers:
 -   **Shared State Management**: The app uses `StateFlow` for reactive state management. `ViewModel` classes (e.g., `WelcomeViewModel`) in the `shared` module expose UI state to the Compose UI.
 -   **ViewModel**: ViewModels are shared components located in the `shared` module, managing pure business logic and state, decoupled from the Android-specific ViewModel implementation where possible, or using multiplatform equivalents.
 -   **Shared Compose UI**: The entire screen hierarchy and navigation are implemented in `composeApp/src/commonMain/kotlin` using Jetpack Compose, ensuring a consistent experience across platforms.
+
+## Tech Stack
+
+-   **Language**: [Kotlin](https://kotlinlang.org/) (Multiplatform)
+-   **UI Framework**: [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/) (Share UI between Android & iOS)
+-   **Architecture**: MVVM (Model-View-ViewModel) with Clean Architecture principles
+-   **State Management**: [Kotlin Flows](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/) (StateFlow)
+-   **Database**: [SQLDelight](https://cashapp.github.io/sqldelight/) (Type-safe database operations)
+-   **Asynchronous Processing**: [Kotlin Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
+-   **Lifecycle**: [Jetpack Lifecycle](https://developer.android.com/jetpack/androidx/releases/lifecycle) (ViewModel, Lifecycle-runtime)
+
+### Platforms Supported
+-   **Android**: Min SDK 24, Target SDK 36
+-   **iOS**: Via Kotlin Native & Compose Multiplatform (UIKit)
