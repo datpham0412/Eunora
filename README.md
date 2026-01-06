@@ -1,5 +1,10 @@
 # Eunora - An adaptive mood reflection app
 
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.2.21-purple?logo=kotlin)](https://kotlinlang.org)
+[![Compose Multiplatform](https://img.shields.io/badge/Compose_Multiplatform-1.9.3-blue?logo=jetbrains)](https://www.jetbrains.com/lp/compose-multiplatform/)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![KMP Contest](https://img.shields.io/badge/KMP%20Contest-2026-orange?logo=kotlin)](https://kotlinconf.com/contest/)
+
 <p align="center">
   <img src="screenshots/logo.png" alt="Eunora logo" width="120" />
 </p>
@@ -7,6 +12,22 @@
 Eunora is a mood reflection app where the experience adapts to emotional intensity, not just emotional labels.
 
 The app is built with Kotlin Multiplatform, sharing core logic and UI across Android and iOS.
+
+
+## Table of Contents
+- [Demo](#demo)
+- [Screenshots](#screenshots)
+- [Problem Statement](#problem-statement)
+- [Core Idea](#core-idea)
+- [Why This Is Different](#why-this-is-different)
+- [User Flow Overview](#user-flow-overview)
+- [System Architecture](#system-architecture)
+- [Tech Stack](#tech-stack)
+- [Repository Structure](#repository-structure)
+- [How to Run](#how-to-run)
+- [Kotlin Coding Conventions](#kotlin-coding-conventions)
+- [Future Roadmap](#future-roadmap)
+- [License](#license)
 
 
 ## Demo
@@ -221,6 +242,12 @@ Select a simulator or connected device and click **Run** ▶️.
 ## Kotlin Coding Conventions
 
 The codebase follows Kotlin’s official coding conventions, using consistent naming and a clear, modular structure across shared and platform-specific code.
+
+## Future Roadmap
+
+- **Advanced AI Orchestration**: Migrate the AI orchestration layer to [**JetBrains Koog**](https://docs.koog.ai/) to support more complex emotional agents and long-term memory compression.
+- **Wearable Integration**: Companion app for WearOS and watchOS for quick mood logging.
+
 
 ## License
 
